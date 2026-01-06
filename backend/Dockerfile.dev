@@ -1,0 +1,20 @@
+# Development Dockerfile for Spring Boot Backend
+
+FROM gradle:8.5-jdk17
+WORKDIR /app
+
+# Copy gradle files
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradle ./gradle
+
+# Download dependencies
+RUN gradle dependencies --no-daemon
+
+# Copy source code
+COPY src ./src
+
+# Expose ports (8080 for app, 5005 for debug)
+EXPOSE 8080 5005
+
+# Run with hot reload and debug enabled
+CMD ["gradle", "bootRun", "--no-daemon", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]

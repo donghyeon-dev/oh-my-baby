@@ -426,13 +426,14 @@ oh-my-baby/
 
 ## 8. 개발 일정
 
-### Phase 1: 프로젝트 셋업 (1주)
-- [ ] 모노레포 구조 생성
-- [ ] Docker Compose 환경 구성
-- [ ] PostgreSQL, MinIO 컨테이너 설정
-- [ ] Next.js 프로젝트 초기화
-- [ ] Spring Boot 프로젝트 초기화
-- [ ] Nginx 설정
+### Phase 1: 프로젝트 셋업 (1주) - **완료**
+- [x] 모노레포 구조 생성
+- [x] Docker Compose 환경 구성
+- [x] PostgreSQL, MinIO 컨테이너 설정
+- [x] Next.js 프로젝트 초기화
+- [x] Spring Boot 프로젝트 초기화
+- [x] Nginx 설정
+- [ ] ~~개발 환경 테스트~~ (스킵 - Docker 미설치 환경)
 
 ### Phase 2: 인증 시스템 (1주)
 - [ ] User 엔티티 및 마이그레이션
@@ -499,11 +500,21 @@ oh-my-baby/
 
 ---
 
-## 11. 다음 단계
+## 11. 진행 현황
 
-1. **프로젝트 구조 생성**: 디렉토리 및 기본 파일 생성
-2. **Docker Compose 작성**: 개발 환경 구성
-3. **Backend 프로젝트 초기화**: Spring Boot + Kotlin
-4. **Frontend 프로젝트 초기화**: Next.js + TypeScript
+### Phase 1 완료 (2026-01-06)
+- [x] 모노레포 구조 생성
+- [x] Docker Compose 환경 구성 (dev/prod)
+- [x] PostgreSQL, MinIO 컨테이너 설정
+- [x] Backend 프로젝트 초기화 (Spring Boot + Kotlin)
+- [x] Frontend 프로젝트 초기화 (Next.js + TypeScript)
+- [x] Nginx 설정
+- [ ] ~~개발 환경 테스트~~ (스킵 - Docker 미설치 환경)
 
-계획서 검토 후 진행 여부를 알려주세요.
+### 다음 단계: Phase 2 - 인증 시스템
+1. User 엔티티 및 마이그레이션
+2. 회원가입/로그인 API
+3. JWT 토큰 발급/검증
+4. Refresh Token 로직
+5. Frontend 로그인/회원가입 UI
+6. 인증 상태 관리 (Zustand)

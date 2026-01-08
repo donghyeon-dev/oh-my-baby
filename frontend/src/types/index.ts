@@ -5,7 +5,6 @@ export interface User {
   name: string
   role: 'ADMIN' | 'VIEWER'
   createdAt: string
-  updatedAt: string
 }
 
 // Auth types

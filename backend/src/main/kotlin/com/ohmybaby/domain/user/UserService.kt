@@ -1,5 +1,6 @@
 package com.ohmybaby.domain.user
 
+import com.ohmybaby.common.exception.InvalidRequestException
 import com.ohmybaby.common.exception.NotFoundException
 import com.ohmybaby.domain.auth.dto.UserResponse
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -41,7 +42,7 @@ class UserService(
             .orElseThrow { NotFoundException("User", userId) }
 
         if (!passwordEncoder.matches(currentPassword, user.password)) {
-            throw IllegalArgumentException("현재 비밀번호가 올바르지 않습니다")
+            throw InvalidRequestException("현재 비밀번호가 올바르지 않습니다")
         }
 
         user.password = passwordEncoder.encode(newPassword)

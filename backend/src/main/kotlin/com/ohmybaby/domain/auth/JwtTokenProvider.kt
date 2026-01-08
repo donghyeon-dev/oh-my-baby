@@ -25,15 +25,15 @@ class JwtTokenProvider(
         Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
     }
 
-    fun createAccessToken(userId: Long, email: String, role: String): String {
+    fun createAccessToken(userId: UUID, email: String, role: String): String {
         return createToken(userId, email, role, accessExpiration)
     }
 
-    fun createRefreshToken(userId: Long, email: String, role: String): String {
+    fun createRefreshToken(userId: UUID, email: String, role: String): String {
         return createToken(userId, email, role, refreshExpiration)
     }
 
-    private fun createToken(userId: Long, email: String, role: String, expiration: Long): String {
+    private fun createToken(userId: UUID, email: String, role: String, expiration: Long): String {
         val now = Date()
         val expiryDate = Date(now.time + expiration)
 
@@ -58,8 +58,8 @@ class JwtTokenProvider(
         }
     }
 
-    fun getUserIdFromToken(token: String): Long {
-        return getClaims(token).subject.toLong()
+    fun getUserIdFromToken(token: String): UUID {
+        return UUID.fromString(getClaims(token).subject)
     }
 
     fun getEmailFromToken(token: String): String {

@@ -31,6 +31,9 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     
+    // ULID (for Primary Key generation)
+    implementation("com.github.f4b6a3:ulid-creator:5.2.3")
+    
     // MinIO
     implementation("io.minio:minio:8.5.7")
     
@@ -51,6 +54,12 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 kotlin {

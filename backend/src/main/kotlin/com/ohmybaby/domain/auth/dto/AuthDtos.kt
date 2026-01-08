@@ -3,6 +3,7 @@ package com.ohmybaby.domain.auth.dto
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import java.util.UUID
 
 data class LoginRequest(
     @field:NotBlank(message = "이메일은 필수입니다")
@@ -34,7 +35,7 @@ data class TokenResponse(
 )
 
 data class UserResponse(
-    val id: Long,
+    val id: UUID,
     val email: String,
     val name: String,
     val role: String,
@@ -43,7 +44,7 @@ data class UserResponse(
     companion object {
         fun from(user: com.ohmybaby.domain.user.User): UserResponse {
             return UserResponse(
-                id = user.id,
+                id = user.getId(),
                 email = user.email,
                 name = user.name,
                 role = user.role.name,

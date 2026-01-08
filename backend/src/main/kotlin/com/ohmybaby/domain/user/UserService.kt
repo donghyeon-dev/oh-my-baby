@@ -6,6 +6,7 @@ import com.ohmybaby.domain.auth.dto.UserResponse
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 @Transactional(readOnly = true)
@@ -14,7 +15,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun getUserById(userId: Long): UserResponse {
+    fun getUserById(userId: UUID): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("User", userId) }
         return UserResponse.from(user)
@@ -27,17 +28,17 @@ class UserService(
     }
 
     @Transactional
-    fun updateProfile(userId: Long, name: String): UserResponse {
+    fun updateProfile(userId: UUID, name: String): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("User", userId) }
 
-        user.name = name
+        user.updateName(name)
         val savedUser = userRepository.save(user)
         return UserResponse.from(savedUser)
     }
 
     @Transactional
-    fun changePassword(userId: Long, currentPassword: String, newPassword: String) {
+    fun changePassword(userId: UUID, currentPassword: String, newPassword: String) {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("User", userId) }
 
@@ -45,16 +46,16 @@ class UserService(
             throw InvalidRequestException("현재 비밀번호가 올바르지 않습니다")
         }
 
-        user.password = passwordEncoder.encode(newPassword)
+        user.updatePassword(passwordEncoder.encode(newPassword))
         userRepository.save(user)
     }
 
     @Transactional
-    fun updateUserRole(userId: Long, role: UserRole): UserResponse {
+    fun updateUserRole(userId: UUID, role: UserRole): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("User", userId) }
 
-        user.role = role
+        user.updateRole(role)
         val savedUser = userRepository.save(user)
         return UserResponse.from(savedUser)
     }

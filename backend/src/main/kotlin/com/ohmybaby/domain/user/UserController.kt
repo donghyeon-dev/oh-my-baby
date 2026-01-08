@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @Tag(name = "User", description = "사용자 API")
 @RestController
@@ -62,7 +63,7 @@ class UserController(
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     fun getUser(
-        @PathVariable userId: Long
+        @PathVariable userId: UUID
     ): ResponseEntity<ApiResponse<UserResponse>> {
         val user = userService.getUserById(userId)
         return ResponseEntity.ok(ApiResponse.success(user))
@@ -72,7 +73,7 @@ class UserController(
     @PutMapping("/{userId}/role")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateUserRole(
-        @PathVariable userId: Long,
+        @PathVariable userId: UUID,
         @Valid @RequestBody request: UpdateRoleRequest
     ): ResponseEntity<ApiResponse<UserResponse>> {
         val user = userService.updateUserRole(userId, request.role)

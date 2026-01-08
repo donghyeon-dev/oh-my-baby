@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Repository
-interface MediaRepository : JpaRepository<Media, Long> {
+interface MediaRepository : JpaRepository<Media, UUID> {
     
     fun findAllByOrderByTakenAtDescCreatedAtDesc(pageable: Pageable): Page<Media>
     
@@ -34,5 +35,5 @@ interface MediaRepository : JpaRepository<Media, Long> {
     """)
     fun findDistinctDates(): List<java.sql.Date>
     
-    fun countByUploaderId(uploaderId: Long): Long
+    fun countByUploaderId(uploaderId: UUID): Long
 }

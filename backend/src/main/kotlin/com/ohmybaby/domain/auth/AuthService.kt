@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
 @Transactional
@@ -81,7 +82,7 @@ class AuthService(
         return createTokenResponse(user)
     }
 
-    fun logout(userId: Long) {
+    fun logout(userId: UUID) {
         // Delete all refresh tokens for user
         refreshTokenRepository.deleteAllByUserId(userId)
     }
@@ -92,13 +93,13 @@ class AuthService(
 
     private fun createTokenResponse(user: User): TokenResponse {
         val accessToken = jwtTokenProvider.createAccessToken(
-            userId = user.id,
+            userId = user.getId(),
             email = user.email,
             role = user.role.name
         )
 
         val refreshTokenString = jwtTokenProvider.createRefreshToken(
-            userId = user.id,
+            userId = user.getId(),
             email = user.email,
             role = user.role.name
         )

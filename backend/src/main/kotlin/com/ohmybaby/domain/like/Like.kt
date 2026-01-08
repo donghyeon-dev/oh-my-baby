@@ -1,5 +1,6 @@
 package com.ohmybaby.domain.like
 
+import com.ohmybaby.common.entity.PrimaryKeyEntity
 import com.ohmybaby.domain.media.Media
 import com.ohmybaby.domain.user.User
 import jakarta.persistence.*
@@ -10,19 +11,25 @@ import java.time.LocalDateTime
     name = "likes",
     uniqueConstraints = [UniqueConstraint(columnNames = ["user_id", "media_id"])]
 )
-data class Like(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+class Like(
+    user: User,
+    media: Media
+) : PrimaryKeyEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    var user: User = user
+        protected set
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id", nullable = false)
-    val media: Media,
+    var media: Media = media
+        protected set
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now()
-)
+
+    override fun toString(): String {
+        return "Like(id=${getId()}, userId=${user.getId()}, mediaId=${media.getId()})"
+    }
+}

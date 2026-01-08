@@ -1,9 +1,13 @@
 -- V1__init_schema.sql
 -- Initial database schema for Oh My Baby
+-- Using UUID (ULID-compatible) for all primary keys
+
+-- Enable uuid-ossp extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
@@ -17,8 +21,8 @@ CREATE INDEX idx_users_email ON users(email);
 
 -- Media table
 CREATE TABLE media (
-    id BIGSERIAL PRIMARY KEY,
-    uploader_id BIGINT NOT NULL REFERENCES users(id),
+    id UUID PRIMARY KEY,
+    uploader_id UUID NOT NULL REFERENCES users(id),
     type VARCHAR(20) NOT NULL,
     original_name VARCHAR(500) NOT NULL,
     stored_path VARCHAR(1000) NOT NULL,
@@ -40,9 +44,9 @@ CREATE INDEX idx_media_type ON media(type);
 
 -- Likes table
 CREATE TABLE likes (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id),
-    media_id BIGINT NOT NULL REFERENCES media(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id),
+    media_id UUID NOT NULL REFERENCES media(id) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, media_id)
 );
@@ -53,8 +57,8 @@ CREATE INDEX idx_likes_user_id ON likes(user_id);
 
 -- Refresh tokens table
 CREATE TABLE refresh_tokens (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token VARCHAR(500) NOT NULL UNIQUE,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -67,12 +71,12 @@ CREATE INDEX idx_refresh_tokens_expires_at ON refresh_tokens(expires_at);
 
 -- Notifications table
 CREATE TABLE notifications (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     type VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,
     message TEXT,
-    media_id BIGINT REFERENCES media(id) ON DELETE CASCADE,
+    media_id UUID REFERENCES media(id) ON DELETE CASCADE,
     is_read BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

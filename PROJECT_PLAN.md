@@ -435,13 +435,13 @@ oh-my-baby/
 - [x] Nginx 설정
 - [ ] ~~개발 환경 테스트~~ (스킵 - Docker 미설치 환경)
 
-### Phase 2: 인증 시스템 (1주)
-- [ ] User 엔티티 및 마이그레이션
-- [ ] 회원가입/로그인 API
-- [ ] JWT 토큰 발급/검증
-- [ ] Refresh Token 로직
-- [ ] Frontend 로그인/회원가입 UI
-- [ ] 인증 상태 관리 (Zustand)
+### Phase 2: 인증 시스템 (1주) - **완료**
+- [x] User 엔티티 및 마이그레이션
+- [x] 회원가입/로그인 API
+- [x] JWT 토큰 발급/검증
+- [x] Refresh Token 로직
+- [x] Frontend 로그인/회원가입 UI
+- [x] 인증 상태 관리 (Zustand)
 
 ### Phase 3: 미디어 업로드 (1주)
 - [ ] Media 엔티티 및 마이그레이션

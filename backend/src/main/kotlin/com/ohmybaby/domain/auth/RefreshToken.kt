@@ -18,7 +18,7 @@ class RefreshToken(
     var user: User = user
         protected set
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 512)
     var token: String = token
         protected set
 

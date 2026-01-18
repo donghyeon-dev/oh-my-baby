@@ -2,12 +2,13 @@ package com.ohmybaby.domain.like
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
-interface LikeRepository : JpaRepository<Like, Long> {
-    fun findByUserIdAndMediaId(userId: Long, mediaId: Long): Like?
-    fun existsByUserIdAndMediaId(userId: Long, mediaId: Long): Boolean
-    fun countByMediaId(mediaId: Long): Long
-    fun deleteByUserIdAndMediaId(userId: Long, mediaId: Long)
-    fun findAllByMediaId(mediaId: Long): List<Like>
+interface LikeRepository : JpaRepository<Like, UUID> {
+    fun findByUserIdAndMediaId(userId: UUID, mediaId: UUID): Like?
+    fun existsByUserIdAndMediaId(userId: UUID, mediaId: UUID): Boolean
+    fun countByMediaId(mediaId: UUID): Long
+    fun deleteByUserIdAndMediaId(userId: UUID, mediaId: UUID)
+    fun findAllByMediaId(mediaId: UUID): List<Like>
 }

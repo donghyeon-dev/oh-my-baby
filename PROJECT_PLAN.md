@@ -435,13 +435,13 @@ oh-my-baby/
 - [x] Nginx 설정
 - [ ] ~~개발 환경 테스트~~ (스킵 - Docker 미설치 환경)
 
-### Phase 2: 인증 시스템 (1주)
-- [ ] User 엔티티 및 마이그레이션
-- [ ] 회원가입/로그인 API
-- [ ] JWT 토큰 발급/검증
-- [ ] Refresh Token 로직
-- [ ] Frontend 로그인/회원가입 UI
-- [ ] 인증 상태 관리 (Zustand)
+### Phase 2: 인증 시스템 (1주) - **완료**
+- [x] User 엔티티 및 마이그레이션
+- [x] 회원가입/로그인 API
+- [x] JWT 토큰 발급/검증
+- [x] Refresh Token 로직
+- [x] Frontend 로그인/회원가입 UI
+- [x] 인증 상태 관리 (Zustand)
 
 ### Phase 3: 미디어 업로드 (1주)
 - [ ] Media 엔티티 및 마이그레이션
@@ -511,10 +511,42 @@ oh-my-baby/
 - [x] Nginx 설정
 - [ ] ~~개발 환경 테스트~~ (스킵 - Docker 미설치 환경)
 
-### 다음 단계: Phase 2 - 인증 시스템
-1. User 엔티티 및 마이그레이션
-2. 회원가입/로그인 API
-3. JWT 토큰 발급/검증
-4. Refresh Token 로직
-5. Frontend 로그인/회원가입 UI
-6. 인증 상태 관리 (Zustand)
+### Phase 2 완료 (2026-01-07)
+- [x] User 엔티티 및 마이그레이션 (Phase 1에서 완료)
+- [x] AuthService, AuthController 구현 (회원가입/로그인 API)
+- [x] JWT 토큰 발급/검증 로직
+- [x] Refresh Token 로직 (Rotation 포함)
+- [x] UserService, UserController 구현
+- [x] Frontend 로그인 페이지 UI
+- [x] Frontend 회원가입 페이지 UI
+- [x] 인증 상태 관리 (Zustand)
+- [x] API 클라이언트 인증 연동
+- [x] Protected Route 및 Auth Guard
+
+### Phase 2 테스트 완료 (2026-01-18)
+**Backend 단위 테스트 (31 tests)**
+- [x] AuthServiceTest: 회원가입, 로그인, 토큰 갱신, 로그아웃 시나리오
+- [x] JwtTokenProviderTest: 토큰 생성, 검증, Claims 추출
+
+**Frontend 단위 테스트 (51 tests)**
+- [x] authStore.test.ts: Zustand 상태 관리 테스트
+- [x] auth.test.ts: API 서비스 테스트 (axios 모킹)
+- [x] AuthGuard.test.tsx: 라우트 보호 컴포넌트 테스트
+
+**E2E 테스트 (Chrome DevTools MCP)**
+- [x] 회원가입 → 자동 로그인 → 갤러리 이동
+- [x] 로그아웃 → 로그인 페이지 이동
+- [x] 로그인 → 갤러리 이동, 사용자 정보 표시
+- [x] Protected Route: 미인증 시 /login 리다이렉트
+
+**발견 및 수정된 이슈**
+- RefreshToken.token 컬럼 길이 255→512 (JWT 토큰 길이 초과 수정)
+- application-local.yml 추가 (H2 인메모리 DB 로컬 개발 환경)
+
+### 다음 단계: Phase 3 - 미디어 업로드
+1. Media 엔티티 및 마이그레이션
+2. MinIO 연동 (파일 업로드)
+3. EXIF 메타데이터 추출
+4. 업로드 API 구현
+5. Frontend 업로드 UI (다중 선택)
+6. 업로드 진행률 표시

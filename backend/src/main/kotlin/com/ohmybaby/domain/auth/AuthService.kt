@@ -30,12 +30,13 @@ class AuthService(
             throw DuplicateException("User", "email", request.email)
         }
 
-        // Create user
+        // Create user - First user becomes ADMIN, others are VIEWER
+        val isFirstUser = userRepository.count() == 0L
         val user = User(
             email = request.email,
             password = passwordEncoder.encode(request.password),
             name = request.name,
-            role = UserRole.VIEWER  // Default role
+            role = if (isFirstUser) UserRole.ADMIN else UserRole.VIEWER
         )
         val savedUser = userRepository.save(user)
 

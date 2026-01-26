@@ -40,6 +40,7 @@ jest.mock('axios', () => ({
 
 import { mediaService } from '../media'
 import api from '../api'
+import type { AxiosProgressEvent } from 'axios'
 import {
   ApiResponse,
   Media,
@@ -110,8 +111,7 @@ describe('mediaService', () => {
         timestamp: '2024-01-17T00:00:00Z',
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let capturedOnProgress: any
+      let capturedOnProgress: ((progressEvent: AxiosProgressEvent) => void) | undefined
 
       mockedAxios.post.mockImplementation((url, data, config) => {
         if (config?.onUploadProgress) {

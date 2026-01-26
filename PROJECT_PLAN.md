@@ -451,13 +451,13 @@ oh-my-baby/
 - [x] Frontend 업로드 UI (다중 선택)
 - [x] 업로드 진행률 표시
 
-### Phase 4: 미디어 조회/다운로드 (1주)
-- [ ] 미디어 목록 API (페이지네이션, 날짜 필터)
-- [ ] Frontend 갤러리 UI
-- [ ] 날짜별 그룹핑
-- [ ] 사진 뷰어 (확대)
-- [ ] 동영상 플레이어
-- [ ] 다운로드 API (단일/ZIP)
+### Phase 4: 미디어 조회/다운로드 (1주) - **완료**
+- [x] 미디어 목록 API (페이지네이션, 날짜 필터) - Phase 3에서 완료
+- [x] Frontend 갤러리 UI
+- [x] 날짜별 그룹핑
+- [x] 사진 뷰어 (확대)
+- [x] 동영상 플레이어
+- [x] 다운로드 API (단일/순차 다운로드)
 
 ### Phase 5: 부가 기능 (1주)
 - [ ] 좋아요 기능
@@ -582,10 +582,45 @@ oh-my-baby/
 - 이미지 EXIF 데이터 자동 추출 (촬영일시, 크기)
 - ADMIN 권한 사용자만 업로드 가능
 
-### 다음 단계: Phase 4 - 미디어 조회/다운로드
-1. 미디어 목록 API (페이지네이션, 날짜 필터)
-2. Frontend 갤러리 UI
-3. 날짜별 그룹핑
-4. 사진 뷰어 (확대)
-5. 동영상 플레이어
-6. 다운로드 API (단일/ZIP)
+### Phase 4 완료 (2026-01-26)
+**Frontend 구현**
+- [x] MediaCard 컴포넌트: 미디어 썸네일 카드
+- [x] DateHeader 컴포넌트: 날짜별 그룹 헤더
+- [x] MediaGrid 컴포넌트: 무한 스크롤 그리드 (IntersectionObserver)
+- [x] MediaViewer 컴포넌트: 사진 줌/동영상 플레이어 통합 뷰어
+- [x] DownloadButton 컴포넌트: 단일 파일 다운로드
+- [x] 갤러리 페이지: 필터 탭, 선택 모드, 일괄 다운로드
+
+**테스트 (100 tests 추가)**
+- [x] MediaCard.test.tsx: 렌더링, 선택, 클릭 핸들러 (39 tests)
+- [x] DateHeader.test.tsx: 날짜 포맷, 개수 표시 (16 tests)
+- [x] MediaViewer.test.tsx: 네비게이션, 줌, 키보드 (27 tests)
+- [x] MediaGrid.test.tsx: 무한 스크롤, 날짜 그룹핑 (18 tests)
+
+**E2E 테스트 (Chrome DevTools MCP)**
+- [x] 갤러리 빈 상태 확인
+- [x] ADMIN 권한 업로드 링크 표시
+- [x] 필터 탭 (전체/사진/동영상) 동작
+- [x] 선택 모드 UI (선택 개수, 취소, 다운로드 버튼)
+- [x] 로그아웃 후 리다이렉트
+
+**버그 수정**
+- [x] Spring Security CORS 설정 추가 (cors { } 활성화)
+- [x] React Rules of Hooks 위반 수정 (MediaViewer early return)
+- [x] useMemo 추가로 MediaGrid 성능 최적화
+- [x] MediaCard 키보드 접근성 추가
+
+**주요 기능**
+- 반응형 그리드 (2/3/4 컬럼)
+- 날짜별 미디어 그룹핑 (최신순)
+- 사진 뷰어: 줌 인/아웃 (0.5x-3x), 휠/클릭 줌, 키보드 네비게이션
+- 동영상 플레이어: HTML5 video, 자동재생, 전체화면
+- 메타데이터 패널: 파일명, 날짜, 크기, 업로더
+- 단일/일괄 다운로드: Presigned URL 기반 순차 다운로드
+- 터치 스와이프 지원 (모바일)
+
+### 다음 단계: Phase 5 - 부가 기능
+1. 좋아요 기능
+2. 알림 기능 (인앱)
+3. PWA 설정
+4. 반응형 UI 최적화

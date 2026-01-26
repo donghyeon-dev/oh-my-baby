@@ -11,10 +11,13 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
   const router = useRouter()
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated, user, _hasHydrated } = useAuthStore()
   const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
+    // Don't check auth until hydrated from localStorage
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.replace('/login')
       return
@@ -26,9 +29,9 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
     }
 
     setIsChecking(false)
-  }, [isAuthenticated, user, requireAdmin, router])
+  }, [_hasHydrated, isAuthenticated, user, requireAdmin, router])
 
-  if (isChecking) {
+  if (!_hasHydrated || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white">
         <div className="text-center">

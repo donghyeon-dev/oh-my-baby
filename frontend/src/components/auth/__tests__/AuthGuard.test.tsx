@@ -51,6 +51,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -70,6 +71,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockAdminUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -92,6 +94,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: false,
         user: null,
+        _hasHydrated: true,
       })
 
       render(
@@ -108,6 +111,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: false,
         user: null,
+        _hasHydrated: true,
       })
 
       render(
@@ -119,10 +123,27 @@ describe('AuthGuard', () => {
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument()
     })
 
-    it('should show loading state while checking', () => {
+    it('should show loading state while hydrating', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: false,
         user: null,
+        _hasHydrated: false,
+      })
+
+      render(
+        <AuthGuard>
+          <div>Protected Content</div>
+        </AuthGuard>
+      )
+
+      expect(screen.getByText('Loading...')).toBeInTheDocument()
+    })
+
+    it('should show loading state while checking after hydration', () => {
+      ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
+        isAuthenticated: false,
+        user: null,
+        _hasHydrated: true,
       })
 
       render(
@@ -140,6 +161,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockAdminUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -159,6 +181,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -175,6 +198,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -194,6 +218,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -215,6 +240,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: null,
+        _hasHydrated: true,
       })
 
       render(
@@ -227,18 +253,13 @@ describe('AuthGuard', () => {
     })
 
     it('should handle user role change from VIEWER to ADMIN', async () => {
-      const { rerender } = render(
-        <AuthGuard requireAdmin={true}>
-          <div>Admin Content</div>
-        </AuthGuard>
-      )
-
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
-      rerender(
+      const { rerender } = render(
         <AuthGuard requireAdmin={true}>
           <div>Admin Content</div>
         </AuthGuard>
@@ -249,6 +270,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockAdminUser,
+        _hasHydrated: true,
       })
 
       rerender(
@@ -266,6 +288,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: false,
         user: null,
+        _hasHydrated: true,
       })
 
       const { rerender } = render(
@@ -279,6 +302,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       rerender(
@@ -296,6 +320,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -317,6 +342,7 @@ describe('AuthGuard', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockAdminUser,
+        _hasHydrated: true,
       })
 
       render(
@@ -336,6 +362,24 @@ describe('AuthGuard', () => {
         expect(screen.getByText('Section Content')).toBeInTheDocument()
         expect(screen.getByText('Footer')).toBeInTheDocument()
       })
+    })
+
+    it('should not check auth until hydrated', () => {
+      ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
+        isAuthenticated: false,
+        user: null,
+        _hasHydrated: false,
+      })
+
+      render(
+        <AuthGuard>
+          <div>Protected Content</div>
+        </AuthGuard>
+      )
+
+      // Should show loading and NOT redirect
+      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      expect(mockReplace).not.toHaveBeenCalled()
     })
   })
 

@@ -30,11 +30,11 @@
 - [ ] 세션 자동 연장 (Refresh Token Rotation)
 
 #### 미디어 업로드
-- [ ] 단일 파일 업로드 (사진/동영상)
-- [ ] 다중 파일 업로드 (사진+동영상 혼합 선택)
-- [ ] 갤러리에서 파일 선택 UI
-- [ ] 업로드 진행률 표시
-- [ ] 동영상 길이 제한 (1분 이내)
+- [x] 단일 파일 업로드 (사진/동영상)
+- [x] 다중 파일 업로드 (사진+동영상 혼합 선택)
+- [x] 갤러리에서 파일 선택 UI
+- [x] 업로드 진행률 표시
+- [ ] 동영상 길이 제한 (1분 이내) - 서버 측 검증 필요
 
 #### 미디어 조회
 - [ ] 전체 미디어 갤러리 뷰
@@ -443,13 +443,13 @@ oh-my-baby/
 - [x] Frontend 로그인/회원가입 UI
 - [x] 인증 상태 관리 (Zustand)
 
-### Phase 3: 미디어 업로드 (1주)
-- [ ] Media 엔티티 및 마이그레이션
-- [ ] MinIO 연동 (파일 업로드)
-- [ ] EXIF 메타데이터 추출
-- [ ] 업로드 API 구현
-- [ ] Frontend 업로드 UI (다중 선택)
-- [ ] 업로드 진행률 표시
+### Phase 3: 미디어 업로드 (1주) - **완료**
+- [x] Media 엔티티 및 마이그레이션
+- [x] MinIO 연동 (파일 업로드)
+- [x] EXIF 메타데이터 추출
+- [x] 업로드 API 구현
+- [x] Frontend 업로드 UI (다중 선택)
+- [x] 업로드 진행률 표시
 
 ### Phase 4: 미디어 조회/다운로드 (1주)
 - [ ] 미디어 목록 API (페이지네이션, 날짜 필터)
@@ -543,10 +543,49 @@ oh-my-baby/
 - RefreshToken.token 컬럼 길이 255→512 (JWT 토큰 길이 초과 수정)
 - application-local.yml 추가 (H2 인메모리 DB 로컬 개발 환경)
 
-### 다음 단계: Phase 3 - 미디어 업로드
-1. Media 엔티티 및 마이그레이션
-2. MinIO 연동 (파일 업로드)
-3. EXIF 메타데이터 추출
-4. 업로드 API 구현
-5. Frontend 업로드 UI (다중 선택)
-6. 업로드 진행률 표시
+### Phase 3 완료 (2026-01-18)
+**Backend 구현**
+- [x] Media 엔티티 및 마이그레이션 (V1__init_schema.sql에 포함)
+- [x] MediaService: 파일 업로드/조회/삭제 로직
+- [x] MediaController: REST API 엔드포인트
+- [x] Media DTOs: Request/Response 데이터 클래스
+- [x] EXIF 메타데이터 추출 (metadata-extractor 라이브러리)
+- [x] MinIO 연동 (파일 업로드, Presigned URL 생성)
+
+**Frontend 구현**
+- [x] Media 타입 정의 업데이트
+- [x] mediaService: API 클라이언트
+- [x] FileUploader 컴포넌트 (드래그앤드롭, 파일 선택)
+- [x] UploadProgressList 컴포넌트 (업로드 진행률 표시)
+- [x] 업로드 페이지 (/upload)
+
+**테스트**
+- [x] MediaServiceTest: 업로드, 조회, 삭제 시나리오 (17 tests)
+- [x] media.test.ts: API 서비스 테스트 (24 tests)
+- [x] AuthGuard.test.tsx: Hydration 대기 로직 추가 테스트 (16 tests)
+
+**E2E 테스트 (Chrome DevTools MCP)**
+- [x] 로그인 후 /upload 페이지 세션 유지 확인
+- [x] VIEWER 역할 사용자 업로드 권한 차단 확인
+- [x] 인증 상태 페이지 이동 간 유지 확인
+
+**버그 수정**
+- [x] AuthGuard Zustand hydration 대기 로직 추가 (페이지 이동 시 세션 유실 문제 해결)
+- [x] authStore에 `_hasHydrated` 상태 추가하여 localStorage 복원 완료 감지
+
+**주요 기능**
+- 단일/다중 파일 업로드 지원
+- 사진 (JPEG, PNG, GIF, WebP, HEIC) 및 동영상 (MP4, MOV, AVI, WebM) 지원
+- 최대 100MB 파일 크기 제한
+- 최대 20개 파일 동시 업로드
+- 업로드 진행률 실시간 표시
+- 이미지 EXIF 데이터 자동 추출 (촬영일시, 크기)
+- ADMIN 권한 사용자만 업로드 가능
+
+### 다음 단계: Phase 4 - 미디어 조회/다운로드
+1. 미디어 목록 API (페이지네이션, 날짜 필터)
+2. Frontend 갤러리 UI
+3. 날짜별 그룹핑
+4. 사진 뷰어 (확대)
+5. 동영상 플레이어
+6. 다운로드 API (단일/ZIP)

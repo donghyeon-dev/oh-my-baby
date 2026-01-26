@@ -26,7 +26,7 @@ export interface AuthResponse {
 
 // Media types
 export interface Media {
-  id: number
+  id: string
   type: 'PHOTO' | 'VIDEO'
   originalName: string
   url: string
@@ -38,12 +38,34 @@ export interface Media {
   duration?: number
   takenAt?: string
   createdAt: string
-  likeCount: number
-  isLiked: boolean
-  uploader: {
-    id: number
-    name: string
-  }
+  uploaderId: string
+  uploaderName: string
+  likeCount?: number
+  isLiked?: boolean
+}
+
+export interface MediaUploadResponse {
+  id: string
+  type: 'PHOTO' | 'VIDEO'
+  originalName: string
+  url: string
+  size: number
+  mimeType: string
+  width?: number
+  height?: number
+  duration?: number
+  takenAt?: string
+  createdAt: string
+}
+
+export interface BulkUploadResponse {
+  uploaded: MediaUploadResponse[]
+  failed: FailedUpload[]
+}
+
+export interface FailedUpload {
+  fileName: string
+  error: string
 }
 
 export interface MediaListResponse {
@@ -60,6 +82,19 @@ export interface MediaFilters {
   type?: 'PHOTO' | 'VIDEO'
   startDate?: string
   endDate?: string
+  page?: number
+  size?: number
+}
+
+export interface DownloadUrlResponse {
+  url: string
+}
+
+export interface UploadProgress {
+  fileName: string
+  progress: number
+  status: 'pending' | 'uploading' | 'success' | 'error'
+  error?: string
 }
 
 // API Response types

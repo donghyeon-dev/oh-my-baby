@@ -1,0 +1,77 @@
+version: '3.8'
+
+# ===========================================
+# Oh My Baby - Local Development Infrastructure
+# ===========================================
+# PostgreSQL + MinIO only (Backend/Frontend run locally via IDE)
+#
+# Setup:
+#   cp .env.example .env   (edit passwords)
+#   docker-compose up -d
+#   or: ./start.sh
+
+services:
+  # ===========================================
+  # PostgreSQL Database
+  # ===========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: ohmybaby-local-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # MinIO Object Storage
+  # ===========================================
+  minio:
+    image: minio/minio:latest
+    container_name: ohmybaby-local-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # ===========================================
+  # MinIO Bucket Initialization
+  # ===========================================
+  minio-init:
+    image: minio/mc:latest
+    container_name: ohmybaby-local-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb myminio/${MINIO_BUCKET_NAME} --ignore-existing;
+      mc anonymous set download myminio/${MINIO_BUCKET_NAME}/public;
+      echo 'MinIO bucket initialized!';
+      exit 0;
+      "
+
+volumes:
+  postgres-data:
+  minio-data:

@@ -3,10 +3,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
-  
+
   devtools:
     restart:
       enabled: true
+
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:3001,http://localhost:3002
 
 logging:
   level:

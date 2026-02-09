@@ -19,10 +19,18 @@ data class MediaResponse(
     val takenAt: LocalDateTime?,
     val createdAt: LocalDateTime,
     val uploaderId: UUID,
-    val uploaderName: String
+    val uploaderName: String,
+    val likeCount: Long = 0,
+    val isLiked: Boolean = false
 ) {
     companion object {
-        fun from(media: Media, url: String, thumbnailUrl: String? = null): MediaResponse {
+        fun from(
+            media: Media,
+            url: String,
+            thumbnailUrl: String? = null,
+            likeCount: Long = 0,
+            isLiked: Boolean = false
+        ): MediaResponse {
             return MediaResponse(
                 id = media.getId(),
                 type = media.type,
@@ -37,7 +45,9 @@ data class MediaResponse(
                 takenAt = media.takenAt,
                 createdAt = media.createdAt,
                 uploaderId = media.uploader.getId(),
-                uploaderName = media.uploader.name
+                uploaderName = media.uploader.name,
+                likeCount = likeCount,
+                isLiked = isLiked
             )
         }
     }

@@ -14,6 +14,14 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'Oh My Baby',
   },
+  icons: {
+    icon: [
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/icons/icon.svg' },
+    ],
+  },
 }
 
 export const viewport: Viewport = {

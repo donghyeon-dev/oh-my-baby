@@ -110,11 +110,25 @@ export interface ApiResponse<T> {
 
 // Notification types
 export interface Notification {
-  id: number
-  type: string
+  id: string
+  type: 'NEW_MEDIA' | 'NEW_LIKE' | 'SYSTEM'
   title: string
   message?: string
-  mediaId?: number
+  mediaId?: string
   isRead: boolean
   createdAt: string
+}
+
+export interface NotificationListResponse {
+  content: Notification[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  hasNext: boolean
+  unreadCount: number
+}
+
+export interface UnreadCountResponse {
+  count: number
 }

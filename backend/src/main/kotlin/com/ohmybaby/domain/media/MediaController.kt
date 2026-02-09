@@ -65,7 +65,8 @@ class MediaController(
         @Parameter(description = "페이지 번호 (0부터 시작)")
         @RequestParam(defaultValue = "0") page: Int,
         @Parameter(description = "페이지 크기")
-        @RequestParam(defaultValue = "20") size: Int
+        @RequestParam(defaultValue = "20") size: Int,
+        @AuthenticationPrincipal principal: UserPrincipal?
     ): ResponseEntity<ApiResponse<MediaListResponse>> {
         val filter = MediaFilterRequest(
             type = type,
@@ -74,16 +75,17 @@ class MediaController(
             page = page,
             size = size
         )
-        val response = mediaService.getMediaList(filter)
+        val response = mediaService.getMediaList(filter, principal?.id)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 
     @Operation(summary = "미디어 상세 조회")
     @GetMapping("/{id}")
     fun getMedia(
-        @PathVariable id: UUID
+        @PathVariable id: UUID,
+        @AuthenticationPrincipal principal: UserPrincipal?
     ): ResponseEntity<ApiResponse<MediaResponse>> {
-        val response = mediaService.getMedia(id)
+        val response = mediaService.getMedia(id, principal?.id)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 

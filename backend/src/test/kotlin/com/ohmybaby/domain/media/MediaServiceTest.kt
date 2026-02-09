@@ -25,17 +25,23 @@ class MediaServiceTest {
     private lateinit var mediaRepository: MediaRepository
     private lateinit var userRepository: UserRepository
     private lateinit var storageService: MinioStorageService
+    private lateinit var likeRepository: com.ohmybaby.domain.like.LikeRepository
+    private lateinit var notificationService: com.ohmybaby.domain.notification.NotificationService
 
     @BeforeEach
     fun setUp() {
         mediaRepository = mockk()
         userRepository = mockk()
         storageService = mockk()
+        likeRepository = mockk()
+        notificationService = mockk()
 
         mediaService = MediaService(
             mediaRepository = mediaRepository,
             userRepository = userRepository,
-            storageService = storageService
+            storageService = storageService,
+            likeRepository = likeRepository,
+            notificationService = notificationService
         )
     }
 
@@ -59,6 +65,7 @@ class MediaServiceTest {
         every { storageService.uploadFile(file, "photos") } returns storedPath
         every { storageService.getPresignedUrl(storedPath) } returns presignedUrl
         every { mediaRepository.save(any<Media>()) } answers { firstArg() }
+        every { notificationService.notifyNewMedia(any(), any()) } just Runs
 
         // When
         val result = mediaService.uploadFile(file, userId)
@@ -180,6 +187,7 @@ class MediaServiceTest {
         every { storageService.uploadFile(file, "videos") } returns storedPath
         every { storageService.getPresignedUrl(storedPath) } returns presignedUrl
         every { mediaRepository.save(any<Media>()) } answers { firstArg() }
+        every { notificationService.notifyNewMedia(any(), any()) } just Runs
 
         // When
         val result = mediaService.uploadFile(file, userId)
@@ -204,6 +212,7 @@ class MediaServiceTest {
         every { storageService.uploadFile(file1, "photos") } returns "photos/uuid1.jpg"
         every { storageService.getPresignedUrl(any()) } returns "http://minio/signed"
         every { mediaRepository.save(any<Media>()) } answers { firstArg() }
+        every { notificationService.notifyNewMedia(any(), any()) } just Runs
 
         // When
         val result = mediaService.uploadFiles(files, userId)
@@ -228,6 +237,8 @@ class MediaServiceTest {
 
         every { mediaRepository.findById(mediaId) } returns Optional.of(media)
         every { storageService.getPresignedUrl(media.storedPath) } returns presignedUrl
+        every { likeRepository.countByMediaId(mediaId) } returns 0L
+        every { likeRepository.existsByUserIdAndMediaId(any(), any()) } returns false
 
         // When
         val result = mediaService.getMedia(mediaId)
@@ -272,6 +283,8 @@ class MediaServiceTest {
 
         every { mediaRepository.findAllWithFilters(null, null, null, any()) } returns page
         every { storageService.getPresignedUrl(any()) } returns "http://minio/signed"
+        every { likeRepository.countByMediaId(any()) } returns 0L
+        every { likeRepository.existsByUserIdAndMediaId(any(), any()) } returns false
 
         // When
         val result = mediaService.getMediaList(filter)

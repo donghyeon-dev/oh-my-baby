@@ -71,6 +71,7 @@ class AuthServiceTest {
         }
 
         every { userRepository.existsByEmail(request.email) } returns false
+        every { userRepository.count() } returns 1L  // Not first user, so VIEWER role
         every { passwordEncoder.encode(request.password) } returns encodedPassword
         every { userRepository.save(any<User>()) } returns savedUser
         every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.VIEWER.name) } returns accessToken

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/authStore'
 import authService from '@/services/auth'
 import { LogOut, User, Upload, Image, Menu, X } from 'lucide-react'
+import { NotificationBell } from '@/components/notification/NotificationBell'
 
 export function Header() {
   const router = useRouter()
@@ -51,6 +52,7 @@ export function Header() {
                 업로드
               </Link>
             )}
+            <NotificationBell />
             <div className="flex items-center space-x-4 pl-4 border-l border-gray-200">
               <span className="text-sm text-gray-600">
                 {user?.name}
@@ -95,6 +97,9 @@ export function Header() {
                   업로드
                 </Link>
               )}
+              <div className="px-2 py-2">
+                <NotificationBell />
+              </div>
               <div className="pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between px-2 py-2">
                   <div className="flex items-center">

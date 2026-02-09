@@ -27,7 +27,9 @@ import javax.imageio.ImageIO
 class MediaService(
     private val mediaRepository: MediaRepository,
     private val userRepository: UserRepository,
-    private val storageService: MinioStorageService
+    private val storageService: MinioStorageService,
+    private val likeRepository: com.ohmybaby.domain.like.LikeRepository,
+    private val notificationService: com.ohmybaby.domain.notification.NotificationService
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -78,6 +80,9 @@ class MediaService(
 
         logger.info("Media uploaded successfully: id=${savedMedia.getId()}, type=$mediaType, size=${file.size}")
 
+        // Create notifications for all other users
+        notificationService.notifyNewMedia(savedMedia, uploader.name)
+
         return MediaUploadResponse.from(savedMedia, url)
     }
 
@@ -102,16 +107,19 @@ class MediaService(
     }
 
     @Transactional(readOnly = true)
-    fun getMedia(id: UUID): MediaResponse {
+    fun getMedia(id: UUID, userId: UUID? = null): MediaResponse {
         val media = mediaRepository.findById(id)
             .orElseThrow { NotFoundException("Media", id) }
 
         val url = storageService.getPresignedUrl(media.storedPath)
-        return MediaResponse.from(media, url)
+        val likeCount = likeRepository.countByMediaId(id)
+        val isLiked = userId?.let { likeRepository.existsByUserIdAndMediaId(it, id) } ?: false
+
+        return MediaResponse.from(media, url, likeCount = likeCount, isLiked = isLiked)
     }
 
     @Transactional(readOnly = true)
-    fun getMediaList(filter: MediaFilterRequest): MediaListResponse {
+    fun getMediaList(filter: MediaFilterRequest, userId: UUID? = null): MediaListResponse {
         val pageable = PageRequest.of(filter.page, filter.size)
         val page = mediaRepository.findAllWithFilters(
             type = filter.type,
@@ -122,7 +130,9 @@ class MediaService(
 
         val content = page.content.map { media ->
             val url = storageService.getPresignedUrl(media.storedPath)
-            MediaResponse.from(media, url)
+            val likeCount = likeRepository.countByMediaId(media.getId())
+            val isLiked = userId?.let { likeRepository.existsByUserIdAndMediaId(it, media.getId()) } ?: false
+            MediaResponse.from(media, url, likeCount = likeCount, isLiked = isLiked)
         }
 
         return MediaListResponse(

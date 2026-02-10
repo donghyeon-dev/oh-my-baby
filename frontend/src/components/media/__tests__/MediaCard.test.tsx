@@ -75,7 +75,7 @@ describe('MediaCard', () => {
 
       const video = container.querySelector('video')
       expect(video).toBeInTheDocument()
-      expect(video).toHaveAttribute('src', 'https://example.com/video.mp4')
+      expect(video).toHaveAttribute('src', 'https://example.com/video.mp4#t=0.5')
     })
 
     it('should show play icon for VIDEO type', () => {

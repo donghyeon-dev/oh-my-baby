@@ -94,8 +94,10 @@ export function MediaCard({ media, onClick, selectable = false, selected = false
         />
       ) : (
         <video
-          src={displayUrl}
-          poster={displayUrl}
+          src={`${displayUrl}#t=0.5`}
+          muted
+          playsInline
+          preload="metadata"
           className="w-full h-full object-cover"
           onLoadedData={handleImageLoad}
           onError={handleImageError}

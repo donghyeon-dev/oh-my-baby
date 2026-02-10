@@ -76,13 +76,17 @@ export default function GalleryPage() {
       try {
         const media = allMediaRef.current.find(m => m.id === ids[i])
         const url = await mediaService.getDownloadUrl(ids[i])
-        // Trigger download
+        // Fetch as blob to bypass cross-origin download restriction
+        const response = await fetch(url)
+        const blob = await response.blob()
+        const blobUrl = URL.createObjectURL(blob)
         const link = document.createElement('a')
-        link.href = url
+        link.href = blobUrl
         link.download = media?.originalName || 'download'
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        URL.revokeObjectURL(blobUrl)
         // Small delay between downloads
         await new Promise(resolve => setTimeout(resolve, 500))
       } catch (err) {

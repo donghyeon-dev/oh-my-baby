@@ -128,6 +128,23 @@ describe('MediaCard', () => {
 
       expect(mockOnClick).not.toHaveBeenCalled()
     })
+
+    it('should toggle selection when card is clicked in selectable mode', () => {
+      const mockOnSelect = jest.fn()
+      render(
+        <MediaCard
+          media={mockPhotoMedia}
+          selectable={true}
+          selected={false}
+          onSelect={mockOnSelect}
+        />
+      )
+
+      const card = screen.getByAltText('test-photo.jpg').closest('div')
+      fireEvent.click(card!)
+
+      expect(mockOnSelect).toHaveBeenCalledWith(true)
+    })
   })
 
   describe('selection functionality', () => {

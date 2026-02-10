@@ -26,7 +26,9 @@ export function MediaCard({ media, onClick, selectable = false, selected = false
   }
 
   const handleCardClick = () => {
-    if (!selectable && onClick) {
+    if (selectable) {
+      onSelect?.(!selected)
+    } else if (onClick) {
       onClick()
     }
   }

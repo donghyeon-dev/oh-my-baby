@@ -121,12 +121,12 @@ class MediaService(
     @Transactional(readOnly = true)
     fun getMediaList(filter: MediaFilterRequest, userId: UUID? = null): MediaListResponse {
         val pageable = PageRequest.of(filter.page, filter.size)
-        val page = mediaRepository.findAllWithFilters(
+        val spec = MediaSpecifications.withFilters(
             type = filter.type,
             startDate = filter.startDate,
-            endDate = filter.endDate,
-            pageable = pageable
+            endDate = filter.endDate
         )
+        val page = mediaRepository.findAll(spec, pageable)
 
         val content = page.content.map { media ->
             val url = storageService.getPresignedUrl(media.storedPath)

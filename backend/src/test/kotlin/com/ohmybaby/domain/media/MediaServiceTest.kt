@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
@@ -281,7 +283,7 @@ class MediaServiceTest {
 
         val filter = MediaFilterRequest(page = 0, size = 20)
 
-        every { mediaRepository.findAllWithFilters(null, null, null, any()) } returns page
+        every { mediaRepository.findAll(any<Specification<Media>>(), any<Pageable>()) } returns page
         every { storageService.getPresignedUrl(any()) } returns "http://minio/signed"
         every { likeRepository.countByMediaId(any()) } returns 0L
         every { likeRepository.existsByUserIdAndMediaId(any(), any()) } returns false
@@ -298,7 +300,7 @@ class MediaServiceTest {
         assertFalse(result.hasNext)
         assertFalse(result.hasPrevious)
 
-        verify(exactly = 1) { mediaRepository.findAllWithFilters(null, null, null, any()) }
+        verify(exactly = 1) { mediaRepository.findAll(any<Specification<Media>>(), any<Pageable>()) }
     }
 
     @Test
@@ -307,7 +309,7 @@ class MediaServiceTest {
         val filter = MediaFilterRequest(type = MediaType.PHOTO, page = 0, size = 20)
         val page = PageImpl(emptyList<Media>(), PageRequest.of(0, 20), 0)
 
-        every { mediaRepository.findAllWithFilters(MediaType.PHOTO, null, null, any()) } returns page
+        every { mediaRepository.findAll(any<Specification<Media>>(), any<Pageable>()) } returns page
 
         // When
         val result = mediaService.getMediaList(filter)
@@ -315,7 +317,7 @@ class MediaServiceTest {
         // Then
         assertEquals(0, result.content.size)
 
-        verify(exactly = 1) { mediaRepository.findAllWithFilters(MediaType.PHOTO, null, null, any()) }
+        verify(exactly = 1) { mediaRepository.findAll(any<Specification<Media>>(), any<Pageable>()) }
     }
 
     // ========== DELETE MEDIA TESTS ==========
@@ -386,7 +388,7 @@ class MediaServiceTest {
         assertTrue(exception.message.contains("삭제 권한"))
 
         verify(exactly = 0) { storageService.deleteFile(any()) }
-        verify(exactly = 0) { mediaRepository.delete(any()) }
+        verify(exactly = 0) { mediaRepository.delete(any<Media>()) }
     }
 
     @Test

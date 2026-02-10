@@ -10,7 +10,7 @@ class User(
     email: String,
     password: String,
     name: String,
-    role: UserRole = UserRole.VIEWER
+    role: UserRole = UserRole.FAMILY
 ) : PrimaryKeyEntity() {
 
     @Column(unique = true, nullable = false)
@@ -68,6 +68,6 @@ class User(
 }
 
 enum class UserRole {
-    ADMIN,   // Can upload, delete, manage users
-    VIEWER   // Can view, download, like
+    PARENT,  // 부모님 - Can upload, delete, manage users
+    FAMILY   // 가족 - Can view, download, like
 }

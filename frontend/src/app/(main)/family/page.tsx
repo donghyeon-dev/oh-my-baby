@@ -31,7 +31,7 @@ export default function FamilyPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (user?.role !== 'ADMIN') return
+    if (user?.role !== 'PARENT') return
 
     const fetchMembers = async () => {
       try {
@@ -47,7 +47,7 @@ export default function FamilyPage() {
     fetchMembers()
   }, [user?.role])
 
-  if (user?.role !== 'ADMIN') {
+  if (user?.role !== 'PARENT') {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100">
@@ -62,7 +62,7 @@ export default function FamilyPage() {
             </svg>
           </div>
           <p className="text-gray-700 font-medium mb-2">접근 권한이 없습니다</p>
-          <p className="text-gray-500 text-sm">관리자만 가족 목록을 볼 수 있습니다</p>
+          <p className="text-gray-500 text-sm">부모님만 가족 목록을 볼 수 있습니다</p>
         </div>
       </div>
     )
@@ -116,10 +116,10 @@ export default function FamilyPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-800">{member.name}</span>
-                  {member.role === 'ADMIN' ? (
+                  {member.role === 'PARENT' ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-700">
                       <Shield className="w-3 h-3" />
-                      관리자
+                      부모님
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">

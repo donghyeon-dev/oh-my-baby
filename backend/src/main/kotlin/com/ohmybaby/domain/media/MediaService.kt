@@ -158,8 +158,8 @@ class MediaService(
         val user = userRepository.findById(userId)
             .orElseThrow { NotFoundException("User", userId) }
 
-        // Only uploader or admin can delete
-        if (media.uploader.getId() != userId && user.role != UserRole.ADMIN) {
+        // Only uploader or parent can delete
+        if (media.uploader.getId() != userId && user.role != UserRole.PARENT) {
             throw ForbiddenException("삭제 권한이 없습니다")
         }
 
@@ -197,8 +197,8 @@ class MediaService(
     }
 
     private fun validateUploaderRole(user: User) {
-        if (user.role != UserRole.ADMIN) {
-            throw ForbiddenException("업로드 권한이 없습니다. 관리자만 업로드할 수 있습니다.")
+        if (user.role != UserRole.PARENT) {
+            throw ForbiddenException("업로드 권한이 없습니다. 부모님만 업로드할 수 있습니다.")
         }
     }
 

@@ -50,7 +50,7 @@ class LikeServiceTest {
         // Given
         val userId = UUID.randomUUID()
         val mediaId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val media = createTestMedia(mediaId, user)
         val like = createTestLike(user, media)
 
@@ -81,7 +81,7 @@ class LikeServiceTest {
         // Given
         val userId = UUID.randomUUID()
         val mediaId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val media = createTestMedia(mediaId, user)
         val existingLike = createTestLike(user, media)
 
@@ -134,7 +134,7 @@ class LikeServiceTest {
         // Given
         val userId = UUID.randomUUID()
         val mediaId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
 
         every { userRepository.findById(userId) } returns Optional.of(user)
         every { mediaRepository.findById(mediaId) } returns Optional.empty()
@@ -157,7 +157,7 @@ class LikeServiceTest {
         // Given
         val userId = UUID.randomUUID()
         val mediaId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val media = createTestMedia(mediaId, user)
         val like = createTestLike(user, media)
 
@@ -236,8 +236,8 @@ class LikeServiceTest {
     fun `getLikes should return list of LikeInfo`() {
         // Given
         val mediaId = UUID.randomUUID()
-        val user1 = createTestUser(UUID.randomUUID(), UserRole.VIEWER, "User One")
-        val user2 = createTestUser(UUID.randomUUID(), UserRole.ADMIN, "User Two")
+        val user1 = createTestUser(UUID.randomUUID(), UserRole.FAMILY, "User One")
+        val user2 = createTestUser(UUID.randomUUID(), UserRole.PARENT, "User Two")
         val media = createTestMedia(mediaId, user1)
         val like1 = createTestLike(user1, media)
         val like2 = createTestLike(user2, media)
@@ -283,7 +283,7 @@ class LikeServiceTest {
     fun `getLikes should return empty list when no likes`() {
         // Given
         val mediaId = UUID.randomUUID()
-        val user = createTestUser(UUID.randomUUID(), UserRole.ADMIN)
+        val user = createTestUser(UUID.randomUUID(), UserRole.PARENT)
         val media = createTestMedia(mediaId, user)
 
         every { mediaRepository.findById(mediaId) } returns Optional.of(media)

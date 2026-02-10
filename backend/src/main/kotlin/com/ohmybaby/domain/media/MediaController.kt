@@ -25,7 +25,7 @@ class MediaController(
 
     @Operation(summary = "미디어 업로드 (단일)")
     @PostMapping("/upload", consumes = [org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE])
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun uploadMedia(
         @RequestPart("file") file: MultipartFile,
         @AuthenticationPrincipal principal: UserPrincipal
@@ -38,7 +38,7 @@ class MediaController(
 
     @Operation(summary = "미디어 업로드 (다중)")
     @PostMapping("/upload/bulk", consumes = [org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE])
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun uploadMediaBulk(
         @RequestPart("files") files: List<MultipartFile>,
         @AuthenticationPrincipal principal: UserPrincipal
@@ -91,7 +91,7 @@ class MediaController(
 
     @Operation(summary = "미디어 삭제")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun deleteMedia(
         @PathVariable id: UUID,
         @AuthenticationPrincipal principal: UserPrincipal

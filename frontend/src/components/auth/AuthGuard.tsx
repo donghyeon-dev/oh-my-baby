@@ -6,10 +6,10 @@ import { useAuthStore } from '@/stores/authStore'
 
 interface AuthGuardProps {
   children: React.ReactNode
-  requireAdmin?: boolean
+  requireParent?: boolean
 }
 
-export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
+export function AuthGuard({ children, requireParent = false }: AuthGuardProps) {
   const router = useRouter()
   const { isAuthenticated, user, _hasHydrated } = useAuthStore()
   const [isChecking, setIsChecking] = useState(true)
@@ -23,13 +23,13 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
       return
     }
 
-    if (requireAdmin && user?.role !== 'ADMIN') {
+    if (requireParent && user?.role !== 'PARENT') {
       router.replace('/gallery')
       return
     }
 
     setIsChecking(false)
-  }, [_hasHydrated, isAuthenticated, user, requireAdmin, router])
+  }, [_hasHydrated, isAuthenticated, user, requireParent, router])
 
   if (!_hasHydrated || isChecking) {
     return (

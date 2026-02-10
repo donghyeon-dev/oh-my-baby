@@ -29,7 +29,7 @@ describe('authStore', () => {
     id: 1,
     email: 'test@example.com',
     name: 'Test User',
-    role: 'VIEWER',
+    role: 'FAMILY',
     createdAt: '2024-01-17T00:00:00Z',
   }
 
@@ -74,7 +74,7 @@ describe('authStore', () => {
       expect(result.current.user?.id).toBe(1)
       expect(result.current.user?.email).toBe('test@example.com')
       expect(result.current.user?.name).toBe('Test User')
-      expect(result.current.user?.role).toBe('VIEWER')
+      expect(result.current.user?.role).toBe('FAMILY')
     })
 
     it('should update user when called multiple times', () => {
@@ -146,14 +146,14 @@ describe('authStore', () => {
       const adminUser: User = {
         ...mockUser,
         id: 99,
-        role: 'ADMIN',
+        role: 'PARENT',
       }
 
       act(() => {
         result.current.login(adminUser, mockAccessToken)
       })
 
-      expect(result.current.user?.role).toBe('ADMIN')
+      expect(result.current.user?.role).toBe('PARENT')
       expect(result.current.isAuthenticated).toBe(true)
     })
 

@@ -58,7 +58,7 @@ class MediaServiceTest {
     fun `uploadFile should upload file successfully for admin user`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val file = mockMultipartFile("test.jpg", "image/jpeg", 1024)
         val storedPath = "photos/uuid.jpg"
         val presignedUrl = "http://minio/photos/uuid.jpg?signed=true"
@@ -89,7 +89,7 @@ class MediaServiceTest {
     fun `uploadFile should throw ForbiddenException for viewer user`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val file = mockMultipartFile("test.jpg", "image/jpeg", 1024)
 
         every { userRepository.findById(userId) } returns Optional.of(user)
@@ -180,7 +180,7 @@ class MediaServiceTest {
     fun `uploadFile should upload video file to videos folder`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val file = mockMultipartFile("test.mp4", "video/mp4", 5 * 1024 * 1024)
         val storedPath = "videos/uuid.mp4"
         val presignedUrl = "http://minio/videos/uuid.mp4?signed=true"
@@ -205,7 +205,7 @@ class MediaServiceTest {
     fun `uploadFiles should handle mixed success and failure`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val file1 = mockMultipartFile("test1.jpg", "image/jpeg", 1024)
         val file2 = mockMultipartFile("test2.exe", "application/x-executable", 1024) // Invalid
         val files = listOf(file1, file2)
@@ -233,7 +233,7 @@ class MediaServiceTest {
         // Given
         val mediaId = UUID.randomUUID()
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val media = createTestMedia(mediaId, user)
         val presignedUrl = "http://minio/photos/test.jpg?signed=true"
 
@@ -275,7 +275,7 @@ class MediaServiceTest {
     fun `getMediaList should return paginated results`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val media1 = createTestMedia(UUID.randomUUID(), user)
         val media2 = createTestMedia(UUID.randomUUID(), user, "test2.jpg")
         val mediaList = listOf(media1, media2)
@@ -327,7 +327,7 @@ class MediaServiceTest {
         // Given
         val mediaId = UUID.randomUUID()
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val media = createTestMedia(mediaId, user)
 
         every { mediaRepository.findById(mediaId) } returns Optional.of(media)
@@ -349,8 +349,8 @@ class MediaServiceTest {
         val mediaId = UUID.randomUUID()
         val uploaderId = UUID.randomUUID()
         val adminId = UUID.randomUUID()
-        val uploader = createTestUser(uploaderId, UserRole.VIEWER)
-        val admin = createTestUser(adminId, UserRole.ADMIN)
+        val uploader = createTestUser(uploaderId, UserRole.FAMILY)
+        val admin = createTestUser(adminId, UserRole.PARENT)
         val media = createTestMedia(mediaId, uploader)
 
         every { mediaRepository.findById(mediaId) } returns Optional.of(media)
@@ -372,8 +372,8 @@ class MediaServiceTest {
         val mediaId = UUID.randomUUID()
         val uploaderId = UUID.randomUUID()
         val viewerId = UUID.randomUUID()
-        val uploader = createTestUser(uploaderId, UserRole.ADMIN)
-        val viewer = createTestUser(viewerId, UserRole.VIEWER)
+        val uploader = createTestUser(uploaderId, UserRole.PARENT)
+        val viewer = createTestUser(viewerId, UserRole.FAMILY)
         val media = createTestMedia(mediaId, uploader)
 
         every { mediaRepository.findById(mediaId) } returns Optional.of(media)
@@ -414,7 +414,7 @@ class MediaServiceTest {
         // Given
         val mediaId = UUID.randomUUID()
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.ADMIN)
+        val user = createTestUser(userId, UserRole.PARENT)
         val media = createTestMedia(mediaId, user)
         val presignedUrl = "http://minio/photos/test.jpg?signed=true&expires=3600"
 

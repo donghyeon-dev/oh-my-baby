@@ -11,7 +11,7 @@ describe('userService', () => {
       id: 1,
       email: 'admin@example.com',
       name: 'Admin User',
-      role: 'ADMIN',
+      role: 'PARENT',
       createdAt: '2024-01-17T00:00:00Z',
       lastLoginAt: '2024-01-18T10:30:00Z',
     },
@@ -19,7 +19,7 @@ describe('userService', () => {
       id: 2,
       email: 'viewer@example.com',
       name: 'Viewer User',
-      role: 'VIEWER',
+      role: 'FAMILY',
       createdAt: '2024-01-17T00:00:00Z',
     },
   ]
@@ -57,9 +57,9 @@ describe('userService', () => {
 
       const result = await userService.getAllUsers()
 
-      expect(result[0].role).toBe('ADMIN')
+      expect(result[0].role).toBe('PARENT')
       expect(result[0].lastLoginAt).toBe('2024-01-18T10:30:00Z')
-      expect(result[1].role).toBe('VIEWER')
+      expect(result[1].role).toBe('FAMILY')
       expect(result[1].lastLoginAt).toBeUndefined()
     })
 

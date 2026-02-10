@@ -11,7 +11,7 @@ describe('authService', () => {
     id: 1,
     email: 'test@example.com',
     name: 'Test User',
-    role: 'VIEWER',
+    role: 'FAMILY',
     createdAt: '2024-01-17T00:00:00Z',
   }
 
@@ -280,7 +280,7 @@ describe('authService', () => {
       expect(result.id).toBe(1)
       expect(result.email).toBe('test@example.com')
       expect(result.name).toBe('Test User')
-      expect(result.role).toBe('VIEWER')
+      expect(result.role).toBe('FAMILY')
     })
 
     it('should throw error when getMe fails', async () => {
@@ -313,7 +313,7 @@ describe('authService', () => {
         id: 2,
         email: 'admin@example.com',
         name: 'Admin User',
-        role: 'ADMIN',
+        role: 'PARENT',
         createdAt: '2024-01-17T00:00:00Z',
       }
 
@@ -327,7 +327,7 @@ describe('authService', () => {
 
       const result = await authService.getMe()
 
-      expect(result.role).toBe('ADMIN')
+      expect(result.role).toBe('PARENT')
       expect(result.email).toBe('admin@example.com')
     })
   })

@@ -30,13 +30,13 @@ class AuthService(
             throw DuplicateException("User", "email", request.email)
         }
 
-        // Create user - First user becomes ADMIN, others are VIEWER
+        // Create user - First user becomes PARENT, others are FAMILY
         val isFirstUser = userRepository.count() == 0L
         val user = User(
             email = request.email,
             password = passwordEncoder.encode(request.password),
             name = request.name,
-            role = if (isFirstUser) UserRole.ADMIN else UserRole.VIEWER
+            role = if (isFirstUser) UserRole.PARENT else UserRole.FAMILY
         )
         val savedUser = userRepository.save(user)
         // Registration counts as first login

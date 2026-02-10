@@ -43,7 +43,7 @@ export function Header() {
               <Image className="w-5 h-5 mr-1" />
               갤러리
             </Link>
-            {user?.role === 'ADMIN' && (
+            {user?.role === 'PARENT' && (
               <Link
                 href="/upload"
                 className="flex items-center text-gray-600 hover:text-pink-500 transition-colors"
@@ -52,7 +52,7 @@ export function Header() {
                 업로드
               </Link>
             )}
-            {user?.role === 'ADMIN' && (
+            {user?.role === 'PARENT' && (
               <Link
                 href="/family"
                 className="flex items-center text-gray-600 hover:text-pink-500 transition-colors"
@@ -96,7 +96,7 @@ export function Header() {
                 <Image className="w-5 h-5 mr-3" />
                 갤러리
               </Link>
-              {user?.role === 'ADMIN' && (
+              {user?.role === 'PARENT' && (
                 <Link
                   href="/upload"
                   onClick={() => setIsMenuOpen(false)}
@@ -106,7 +106,7 @@ export function Header() {
                   업로드
                 </Link>
               )}
-              {user?.role === 'ADMIN' && (
+              {user?.role === 'PARENT' && (
                 <Link
                   href="/family"
                   onClick={() => setIsMenuOpen(false)}

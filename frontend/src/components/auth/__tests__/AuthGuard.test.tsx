@@ -29,7 +29,7 @@ describe('AuthGuard', () => {
     id: 1,
     email: 'viewer@example.com',
     name: 'Viewer User',
-    role: 'VIEWER',
+    role: 'FAMILY',
     createdAt: '2024-01-17T00:00:00Z',
   }
 
@@ -37,7 +37,7 @@ describe('AuthGuard', () => {
     id: 2,
     email: 'admin@example.com',
     name: 'Admin User',
-    role: 'ADMIN',
+    role: 'PARENT',
     createdAt: '2024-01-17T00:00:00Z',
   }
 
@@ -157,7 +157,7 @@ describe('AuthGuard', () => {
   })
 
   describe('admin route protection', () => {
-    it('should render children for admin user when requireAdmin is true', async () => {
+    it('should render children for admin user when requireParent is true', async () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockAdminUser,
@@ -165,7 +165,7 @@ describe('AuthGuard', () => {
       })
 
       render(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>Admin Content</div>
         </AuthGuard>
       )
@@ -177,7 +177,7 @@ describe('AuthGuard', () => {
       expect(mockReplace).not.toHaveBeenCalled()
     })
 
-    it('should redirect viewer to gallery when requireAdmin is true', () => {
+    it('should redirect viewer to gallery when requireParent is true', () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
@@ -185,7 +185,7 @@ describe('AuthGuard', () => {
       })
 
       render(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>Admin Content</div>
         </AuthGuard>
       )
@@ -194,7 +194,7 @@ describe('AuthGuard', () => {
       expect(screen.queryByText('Admin Content')).not.toBeInTheDocument()
     })
 
-    it('should not redirect viewer when requireAdmin is false', async () => {
+    it('should not redirect viewer when requireParent is false', async () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
@@ -202,7 +202,7 @@ describe('AuthGuard', () => {
       })
 
       render(
-        <AuthGuard requireAdmin={false}>
+        <AuthGuard requireParent={false}>
           <div>Regular Content</div>
         </AuthGuard>
       )
@@ -214,7 +214,7 @@ describe('AuthGuard', () => {
       expect(mockReplace).not.toHaveBeenCalled()
     })
 
-    it('should not redirect viewer when requireAdmin is not specified', async () => {
+    it('should not redirect viewer when requireParent is not specified', async () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
@@ -244,7 +244,7 @@ describe('AuthGuard', () => {
       })
 
       render(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>Admin Content</div>
         </AuthGuard>
       )
@@ -252,7 +252,7 @@ describe('AuthGuard', () => {
       expect(mockReplace).toHaveBeenCalledWith('/gallery')
     })
 
-    it('should handle user role change from VIEWER to ADMIN', async () => {
+    it('should handle user role change from FAMILY to PARENT', async () => {
       ;(useAuthStore as unknown as jest.Mock).mockReturnValue({
         isAuthenticated: true,
         user: mockViewerUser,
@@ -260,7 +260,7 @@ describe('AuthGuard', () => {
       })
 
       const { rerender } = render(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>Admin Content</div>
         </AuthGuard>
       )
@@ -274,7 +274,7 @@ describe('AuthGuard', () => {
       })
 
       rerender(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>Admin Content</div>
         </AuthGuard>
       )
@@ -346,7 +346,7 @@ describe('AuthGuard', () => {
       })
 
       render(
-        <AuthGuard requireAdmin={true}>
+        <AuthGuard requireParent={true}>
           <div>
             <header>Header</header>
             <main>

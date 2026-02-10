@@ -1,10 +1,12 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { cn, formatDate, formatFileSize, formatDuration } from '@/lib/utils'
-import { Media } from '@/types'
+import { Media, Comment } from '@/types'
 import { DownloadButton } from './DownloadButton'
 import { LikeButton } from './LikeButton'
 import { likeService, LikeInfo } from '@/services/like'
+import { commentService } from '@/services/comment'
+import { useAuthStore } from '@/stores/authStore'
 
 interface MediaViewerProps {
   media: Media[]
@@ -19,6 +21,10 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
   const [isAnimating, setIsAnimating] = useState(false)
   const [isFitMode, setIsFitMode] = useState(true)
   const [likes, setLikes] = useState<LikeInfo[]>([])
+  const [comments, setComments] = useState<Comment[]>([])
+  const [newComment, setNewComment] = useState('')
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+  const currentUser = useAuthStore((s) => s.user)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
@@ -88,6 +94,58 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
     setLikesVersion((v) => v + 1)
   }, [])
 
+  // Fetch comments for current media
+  const [commentsVersion, setCommentsVersion] = useState(0)
+
+  useEffect(() => {
+    if (!currentMedia) return
+
+    const fetchComments = async () => {
+      try {
+        const commentsList = await commentService.getComments(currentMedia.id)
+        setComments(commentsList)
+      } catch (error) {
+        console.error('Failed to fetch comments:', error)
+        setComments([])
+      }
+    }
+
+    fetchComments()
+  }, [currentMedia?.id, commentsVersion])
+
+  const handleAddComment = useCallback(async () => {
+    if (!currentMedia || !newComment.trim() || isSubmittingComment) return
+
+    setIsSubmittingComment(true)
+    try {
+      await commentService.addComment(currentMedia.id, newComment.trim())
+      setNewComment('')
+      setCommentsVersion((v) => v + 1)
+    } catch (error) {
+      console.error('Failed to add comment:', error)
+    } finally {
+      setIsSubmittingComment(false)
+    }
+  }, [currentMedia, newComment, isSubmittingComment])
+
+  const handleDeleteComment = useCallback(async (commentId: string) => {
+    if (!currentMedia) return
+
+    try {
+      await commentService.deleteComment(currentMedia.id, commentId)
+      setCommentsVersion((v) => v + 1)
+    } catch (error) {
+      console.error('Failed to delete comment:', error)
+    }
+  }, [currentMedia])
+
+  const handleCommentKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleAddComment()
+    }
+  }, [handleAddComment])
+
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1)
@@ -131,6 +189,14 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle shortcuts when typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        if (e.key === 'Escape') {
+          (e.target as HTMLElement).blur()
+        }
+        return
+      }
+
       switch (e.key) {
         case 'ArrowLeft':
           handlePrevious()
@@ -439,6 +505,64 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
               ) : (
                 <p className="text-gray-500 text-sm mt-1">아직 좋아요가 없습니다</p>
               )}
+            </div>
+
+            {/* Comments */}
+            <div>
+              <label className="text-gray-400 text-sm">댓글 {comments.length > 0 && `(${comments.length})`}</label>
+              {comments.length > 0 ? (
+                <div className="mt-1 space-y-2">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="flex items-start gap-2 group">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs font-medium text-blue-600">
+                          {comment.userName.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1">
+                          <p className="text-white text-sm font-medium truncate">{comment.userName}</p>
+                          <span className="text-gray-500 text-xs flex-shrink-0">{formatDate(comment.createdAt)}</span>
+                        </div>
+                        <p className="text-gray-300 text-sm break-all">{comment.content}</p>
+                      </div>
+                      {currentUser && String(currentUser.id) === comment.userId && (
+                        <button
+                          onClick={() => handleDeleteComment(comment.id)}
+                          className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-white/10 text-gray-500 hover:text-red-400 transition-all flex-shrink-0"
+                          aria-label="댓글 삭제"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm mt-1">아직 댓글이 없습니다</p>
+              )}
+
+              {/* Comment input */}
+              <div className="mt-2 flex gap-2">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={handleCommentKeyDown}
+                  placeholder="댓글을 입력하세요..."
+                  maxLength={500}
+                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition-colors"
+                />
+                <button
+                  onClick={handleAddComment}
+                  disabled={!newComment.trim() || isSubmittingComment}
+                  className="px-3 py-1.5 bg-pink-500 hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white text-sm font-medium transition-colors flex-shrink-0"
+                >
+                  {isSubmittingComment ? '...' : '전송'}
+                </button>
+              </div>
             </div>
 
             {/* MIME type */}

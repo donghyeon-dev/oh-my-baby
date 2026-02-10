@@ -8,7 +8,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ohmybaby}
     username: ${SPRING_DATASOURCE_USERNAME:ohmybaby}
-    password: ${SPRING_DATASOURCE_PASSWORD:ohmybaby_dev_2024}
+    password: ${SPRING_DATASOURCE_PASSWORD:ohmybaby5937}
     driver-class-name: org.postgresql.Driver
   
   jpa:
@@ -37,7 +37,7 @@ server:
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
-  secret-key: ${MINIO_SECRET_KEY:minioadmin_dev_2024}
+  secret-key: ${MINIO_SECRET_KEY:ohmybaby5937}
   bucket-name: ${MINIO_BUCKET_NAME:ohmybaby-media}
 
 # JWT Configuration
@@ -51,7 +51,7 @@ logging:
   level:
     root: INFO
     com.ohmybaby: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
 # OpenAPI
 springdoc:

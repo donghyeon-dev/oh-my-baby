@@ -11,7 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -32,11 +32,10 @@ minio:
   secret-key: minioadmin
   bucket-name: ohmybaby-media
 
-# Logging - more verbose for local dev
+# Logging
 logging:
   level:
     root: INFO
     com.ohmybaby: DEBUG
-    org.springframework.security: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: INFO
+    p6spy: INFO

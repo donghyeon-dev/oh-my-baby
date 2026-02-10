@@ -30,6 +30,9 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
+
+    // SQL Logging
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2")
     
     // ULID (for Primary Key generation)
     implementation("com.github.f4b6a3:ulid-creator:5.2.3")

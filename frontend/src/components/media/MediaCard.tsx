@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Heart } from 'lucide-react'
 import { cn, formatDuration } from '@/lib/utils'
 import { Media } from '@/types'
 
@@ -155,6 +156,14 @@ export function MediaCard({ media, onClick, selectable = false, selected = false
       {!isLoading && !hasError && media.type === 'VIDEO' && media.duration && (
         <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-sm rounded text-xs font-medium text-white">
           {formatDuration(media.duration)}
+        </div>
+      )}
+
+      {/* Like indicator */}
+      {!isLoading && !hasError && media.likeCount != null && media.likeCount > 0 && (
+        <div className="absolute bottom-2 left-2 flex items-center gap-1 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm rounded text-xs font-medium text-white">
+          <Heart className="w-3 h-3 text-red-400" fill="currentColor" />
+          <span>{media.likeCount}</span>
         </div>
       )}
 

@@ -66,6 +66,8 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
   }, [])
 
   // Fetch likes for current media
+  const [likesVersion, setLikesVersion] = useState(0)
+
   useEffect(() => {
     if (!currentMedia) return
 
@@ -80,7 +82,11 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
     }
 
     fetchLikes()
-  }, [currentMedia?.id])
+  }, [currentMedia?.id, likesVersion])
+
+  const handleLikeChange = useCallback(() => {
+    setLikesVersion((v) => v + 1)
+  }, [])
 
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
@@ -243,6 +249,7 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
           initialLikeCount={currentMedia.likeCount}
           variant="icon"
           className="!bg-black/50 hover:!bg-black/70"
+          onLikeChange={handleLikeChange}
         />
 
         {/* Download button */}

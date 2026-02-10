@@ -27,13 +27,18 @@ export function DownloadButton({
       setError(null)
       const url = await mediaService.getDownloadUrl(mediaId)
 
-      // Create anchor and trigger download
+      // Fetch as blob to bypass cross-origin download restriction
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const blobUrl = URL.createObjectURL(blob)
+
       const link = document.createElement('a')
-      link.href = url
+      link.href = blobUrl
       link.download = fileName
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      URL.revokeObjectURL(blobUrl)
     } catch (err) {
       setError('다운로드 실패')
       console.error('Download failed:', err)

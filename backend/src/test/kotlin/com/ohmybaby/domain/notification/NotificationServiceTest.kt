@@ -47,7 +47,7 @@ class NotificationServiceTest {
     fun `getNotifications should return paginated notifications with unread count`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val notification1 = createTestNotification(user, NotificationType.NEW_MEDIA, isRead = false)
         val notification2 = createTestNotification(user, NotificationType.NEW_LIKE, isRead = true)
         val notifications = listOf(notification1, notification2)
@@ -100,7 +100,7 @@ class NotificationServiceTest {
         // Given
         val notificationId = UUID.randomUUID()
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val notification = createTestNotification(user, NotificationType.NEW_MEDIA, isRead = false)
 
         every { notificationRepository.findById(notificationId) } returns Optional.of(notification)
@@ -142,7 +142,7 @@ class NotificationServiceTest {
         val notificationId = UUID.randomUUID()
         val ownerId = UUID.randomUUID()
         val otherUserId = UUID.randomUUID()
-        val owner = createTestUser(ownerId, UserRole.VIEWER)
+        val owner = createTestUser(ownerId, UserRole.FAMILY)
         val notification = createTestNotification(owner, NotificationType.NEW_MEDIA, isRead = false)
 
         every { notificationRepository.findById(notificationId) } returns Optional.of(notification)
@@ -165,7 +165,7 @@ class NotificationServiceTest {
     fun `markAllAsRead should mark all user notifications as read`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val notification1 = createTestNotification(user, NotificationType.NEW_MEDIA, isRead = false)
         val notification2 = createTestNotification(user, NotificationType.NEW_LIKE, isRead = false)
         val unreadNotifications = listOf(notification1, notification2)
@@ -208,7 +208,7 @@ class NotificationServiceTest {
     fun `createNotification should save notification`() {
         // Given
         val userId = UUID.randomUUID()
-        val user = createTestUser(userId, UserRole.VIEWER)
+        val user = createTestUser(userId, UserRole.FAMILY)
         val notification = createTestNotification(user, NotificationType.SYSTEM, isRead = false)
 
         every { notificationRepository.save(any<Notification>()) } returns notification
@@ -237,9 +237,9 @@ class NotificationServiceTest {
         val uploaderId = UUID.randomUUID()
         val user1Id = UUID.randomUUID()
         val user2Id = UUID.randomUUID()
-        val uploader = createTestUser(uploaderId, UserRole.ADMIN, "Uploader")
-        val user1 = createTestUser(user1Id, UserRole.VIEWER, "User1")
-        val user2 = createTestUser(user2Id, UserRole.VIEWER, "User2")
+        val uploader = createTestUser(uploaderId, UserRole.PARENT, "Uploader")
+        val user1 = createTestUser(user1Id, UserRole.FAMILY, "User1")
+        val user2 = createTestUser(user2Id, UserRole.FAMILY, "User2")
         val media = createTestMedia(UUID.randomUUID(), uploader)
         val allUsers = listOf(uploader, user1, user2)
 
@@ -265,7 +265,7 @@ class NotificationServiceTest {
     fun `notifyNewMedia should not create notification for uploader`() {
         // Given
         val uploaderId = UUID.randomUUID()
-        val uploader = createTestUser(uploaderId, UserRole.ADMIN, "Uploader")
+        val uploader = createTestUser(uploaderId, UserRole.PARENT, "Uploader")
         val media = createTestMedia(UUID.randomUUID(), uploader)
         val allUsers = listOf(uploader)
 
@@ -288,7 +288,7 @@ class NotificationServiceTest {
     fun `notifyNewMedia should handle single user scenario`() {
         // Given
         val uploaderId = UUID.randomUUID()
-        val uploader = createTestUser(uploaderId, UserRole.ADMIN, "Uploader")
+        val uploader = createTestUser(uploaderId, UserRole.PARENT, "Uploader")
         val media = createTestMedia(UUID.randomUUID(), uploader)
 
         every { userRepository.findAll() } returns listOf(uploader)

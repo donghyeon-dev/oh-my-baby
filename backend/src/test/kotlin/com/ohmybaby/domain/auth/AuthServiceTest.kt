@@ -64,18 +64,18 @@ class AuthServiceTest {
             email = request.email,
             password = encodedPassword,
             name = request.name,
-            role = UserRole.VIEWER
+            role = UserRole.FAMILY
         ).apply {
             // Simulate saved entity with ID
             setIdForTest(userId)
         }
 
         every { userRepository.existsByEmail(request.email) } returns false
-        every { userRepository.count() } returns 1L  // Not first user, so VIEWER role
+        every { userRepository.count() } returns 1L  // Not first user, so FAMILY role
         every { passwordEncoder.encode(request.password) } returns encodedPassword
         every { userRepository.save(any<User>()) } returns savedUser
-        every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.VIEWER.name) } returns accessToken
-        every { jwtTokenProvider.createRefreshToken(userId, request.email, UserRole.VIEWER.name) } returns refreshToken
+        every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.FAMILY.name) } returns accessToken
+        every { jwtTokenProvider.createRefreshToken(userId, request.email, UserRole.FAMILY.name) } returns refreshToken
         every { jwtTokenProvider.getRefreshTokenExpiration() } returns 604800000L // 7 days
         every { refreshTokenRepository.save(any<RefreshToken>()) } returns mockk()
 
@@ -88,11 +88,11 @@ class AuthServiceTest {
         assertEquals(refreshToken, result.refreshToken)
         assertEquals(request.email, result.user.email)
         assertEquals(request.name, result.user.name)
-        assertEquals(UserRole.VIEWER.name, result.user.role)
+        assertEquals(UserRole.FAMILY.name, result.user.role)
 
         verify(exactly = 1) { userRepository.existsByEmail(request.email) }
         verify(exactly = 1) { passwordEncoder.encode(request.password) }
-        verify(exactly = 1) { userRepository.save(any<User>()) }
+        verify(exactly = 2) { userRepository.save(any<User>()) }
         verify(exactly = 1) { jwtTokenProvider.createAccessToken(any(), any(), any()) }
         verify(exactly = 1) { jwtTokenProvider.createRefreshToken(any(), any(), any()) }
         verify(exactly = 1) { refreshTokenRepository.save(any<RefreshToken>()) }
@@ -140,15 +140,16 @@ class AuthServiceTest {
             email = request.email,
             password = encodedPassword,
             name = "Test User",
-            role = UserRole.VIEWER
+            role = UserRole.FAMILY
         ).apply {
             setIdForTest(userId)
         }
 
         every { userRepository.findByEmail(request.email) } returns Optional.of(user)
         every { passwordEncoder.matches(request.password, encodedPassword) } returns true
-        every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.VIEWER.name) } returns accessToken
-        every { jwtTokenProvider.createRefreshToken(userId, request.email, UserRole.VIEWER.name) } returns refreshToken
+        every { userRepository.save(any<User>()) } returns user
+        every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.FAMILY.name) } returns accessToken
+        every { jwtTokenProvider.createRefreshToken(userId, request.email, UserRole.FAMILY.name) } returns refreshToken
         every { jwtTokenProvider.getRefreshTokenExpiration() } returns 604800000L
         every { refreshTokenRepository.save(any<RefreshToken>()) } returns mockk()
 
@@ -203,7 +204,7 @@ class AuthServiceTest {
             email = request.email,
             password = encodedPassword,
             name = "Test User",
-            role = UserRole.VIEWER
+            role = UserRole.FAMILY
         ).apply {
             setIdForTest(userId)
         }
@@ -239,7 +240,7 @@ class AuthServiceTest {
             email = email,
             password = "encodedPassword",
             name = "Test User",
-            role = UserRole.VIEWER
+            role = UserRole.FAMILY
         ).apply {
             setIdForTest(userId)
         }
@@ -253,8 +254,8 @@ class AuthServiceTest {
         every { jwtTokenProvider.validateToken(oldRefreshToken) } returns true
         every { refreshTokenRepository.findByToken(oldRefreshToken) } returns storedToken
         every { refreshTokenRepository.delete(storedToken) } just Runs
-        every { jwtTokenProvider.createAccessToken(userId, email, UserRole.VIEWER.name) } returns newAccessToken
-        every { jwtTokenProvider.createRefreshToken(userId, email, UserRole.VIEWER.name) } returns newRefreshToken
+        every { jwtTokenProvider.createAccessToken(userId, email, UserRole.FAMILY.name) } returns newAccessToken
+        every { jwtTokenProvider.createRefreshToken(userId, email, UserRole.FAMILY.name) } returns newRefreshToken
         every { jwtTokenProvider.getRefreshTokenExpiration() } returns 604800000L
         every { refreshTokenRepository.save(any<RefreshToken>()) } returns mockk()
 
@@ -321,7 +322,7 @@ class AuthServiceTest {
             email = "test@example.com",
             password = "encodedPassword",
             name = "Test User",
-            role = UserRole.VIEWER
+            role = UserRole.FAMILY
         ).apply {
             setIdForTest(userId)
         }

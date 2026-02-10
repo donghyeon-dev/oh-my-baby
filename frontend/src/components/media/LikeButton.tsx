@@ -10,7 +10,9 @@ interface LikeButtonProps {
   initialLikeCount?: number
   initialIsLiked?: boolean
   variant?: 'icon' | 'button'
+  showCount?: boolean
   className?: string
+  onLikeChange?: (isLiked: boolean, likeCount: number) => void
 }
 
 export function LikeButton({
@@ -18,7 +20,9 @@ export function LikeButton({
   initialLikeCount = 0,
   initialIsLiked = false,
   variant = 'icon',
+  showCount = true,
   className,
+  onLikeChange,
 }: LikeButtonProps) {
   const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
@@ -38,6 +42,7 @@ export function LikeButton({
       const response = await likeService.toggleLike(mediaId)
       setIsLiked(response.isLiked)
       setLikeCount(response.likeCount)
+      onLikeChange?.(response.isLiked, response.likeCount)
     } catch (error) {
       // Revert on error
       setIsLiked(prevIsLiked)
@@ -53,7 +58,7 @@ export function LikeButton({
       <button
         onClick={handleToggleLike}
         className={cn(
-          'p-1.5 rounded-full transition-all duration-200',
+          'flex items-center gap-1 p-1.5 rounded-full transition-all duration-200',
           isLiked
             ? 'text-red-500 hover:text-red-600'
             : 'text-gray-400 hover:text-red-500',
@@ -68,6 +73,9 @@ export function LikeButton({
           )}
           fill={isLiked ? 'currentColor' : 'none'}
         />
+        {showCount && likeCount > 0 && (
+          <span className="text-xs font-medium text-white">{likeCount}</span>
+        )}
       </button>
     )
   }

@@ -10,7 +10,7 @@ class User(
     email: String,
     password: String,
     name: String,
-    role: UserRole = UserRole.VIEWER
+    role: UserRole = UserRole.FAMILY
 ) : PrimaryKeyEntity() {
 
     @Column(unique = true, nullable = false)
@@ -37,6 +37,10 @@ class User(
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
 
+    @Column(name = "last_login_at")
+    var lastLoginAt: LocalDateTime? = null
+        protected set
+
     @PreUpdate
     fun onUpdate() {
         updatedAt = LocalDateTime.now()
@@ -54,12 +58,16 @@ class User(
         this.role = newRole
     }
 
+    fun updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now()
+    }
+
     override fun toString(): String {
         return "User(id=${getId()}, email='$email', name='$name', role=$role)"
     }
 }
 
 enum class UserRole {
-    ADMIN,   // Can upload, delete, manage users
-    VIEWER   // Can view, download, like
+    PARENT,  // 부모님 - Can upload, delete, manage users
+    FAMILY   // 가족 - Can view, download, like
 }

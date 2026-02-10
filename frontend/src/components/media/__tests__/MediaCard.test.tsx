@@ -75,7 +75,7 @@ describe('MediaCard', () => {
 
       const video = container.querySelector('video')
       expect(video).toBeInTheDocument()
-      expect(video).toHaveAttribute('src', 'https://example.com/video.mp4')
+      expect(video).toHaveAttribute('src', 'https://example.com/video.mp4#t=0.5')
     })
 
     it('should show play icon for VIDEO type', () => {
@@ -127,6 +127,23 @@ describe('MediaCard', () => {
       fireEvent.click(card!)
 
       expect(mockOnClick).not.toHaveBeenCalled()
+    })
+
+    it('should toggle selection when card is clicked in selectable mode', () => {
+      const mockOnSelect = jest.fn()
+      render(
+        <MediaCard
+          media={mockPhotoMedia}
+          selectable={true}
+          selected={false}
+          onSelect={mockOnSelect}
+        />
+      )
+
+      const card = screen.getByAltText('test-photo.jpg').closest('div')
+      fireEvent.click(card!)
+
+      expect(mockOnSelect).toHaveBeenCalledWith(true)
     })
   })
 

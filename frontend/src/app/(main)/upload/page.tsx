@@ -93,8 +93,8 @@ export default function UploadPage() {
   const successCount = uploads.filter((u) => u.status === 'success').length
   const errorCount = uploads.filter((u) => u.status === 'error').length
 
-  // Check if user has admin role
-  if (user?.role !== 'ADMIN') {
+  // Check if user has parent role
+  if (user?.role !== 'PARENT') {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-100">
@@ -109,7 +109,7 @@ export default function UploadPage() {
             </svg>
           </div>
           <p className="text-gray-700 font-medium mb-2">업로드 권한이 없습니다</p>
-          <p className="text-gray-500 text-sm">관리자만 파일을 업로드할 수 있습니다</p>
+          <p className="text-gray-500 text-sm">부모님만 파일을 업로드할 수 있습니다</p>
         </div>
       </div>
     )

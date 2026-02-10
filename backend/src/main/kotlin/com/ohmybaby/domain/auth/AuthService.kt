@@ -30,15 +30,18 @@ class AuthService(
             throw DuplicateException("User", "email", request.email)
         }
 
-        // Create user - First user becomes ADMIN, others are VIEWER
+        // Create user - First user becomes PARENT, others are FAMILY
         val isFirstUser = userRepository.count() == 0L
         val user = User(
             email = request.email,
             password = passwordEncoder.encode(request.password),
             name = request.name,
-            role = if (isFirstUser) UserRole.ADMIN else UserRole.VIEWER
+            role = if (isFirstUser) UserRole.PARENT else UserRole.FAMILY
         )
         val savedUser = userRepository.save(user)
+        // Registration counts as first login
+        savedUser.updateLastLoginAt()
+        userRepository.save(savedUser)
 
         // Generate tokens
         return createTokenResponse(savedUser)
@@ -53,6 +56,10 @@ class AuthService(
         if (!passwordEncoder.matches(request.password, user.password)) {
             throw UnauthorizedException("이메일 또는 비밀번호가 올바르지 않습니다")
         }
+
+        // Update last login time
+        user.updateLastLoginAt()
+        userRepository.save(user)
 
         // Generate tokens
         return createTokenResponse(user)

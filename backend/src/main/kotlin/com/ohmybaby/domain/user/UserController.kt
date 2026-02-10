@@ -51,17 +51,17 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.success(Unit))
     }
 
-    @Operation(summary = "모든 사용자 조회 (관리자 전용)")
+    @Operation(summary = "모든 사용자 조회 (부모님 전용)")
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun getAllUsers(): ResponseEntity<ApiResponse<List<UserResponse>>> {
         val users = userService.getAllUsers()
         return ResponseEntity.ok(ApiResponse.success(users))
     }
 
-    @Operation(summary = "사용자 조회 (관리자 전용)")
+    @Operation(summary = "사용자 조회 (부모님 전용)")
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun getUser(
         @PathVariable userId: UUID
     ): ResponseEntity<ApiResponse<UserResponse>> {
@@ -69,9 +69,9 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.success(user))
     }
 
-    @Operation(summary = "사용자 권한 변경 (관리자 전용)")
+    @Operation(summary = "사용자 권한 변경 (부모님 전용)")
     @PutMapping("/{userId}/role")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PARENT')")
     fun updateUserRole(
         @PathVariable userId: UUID,
         @Valid @RequestBody request: UpdateRoleRequest

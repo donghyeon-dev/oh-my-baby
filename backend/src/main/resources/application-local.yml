@@ -11,7 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -28,15 +28,14 @@ spring:
 # MinIO - disabled for local development
 minio:
   endpoint: http://localhost:9000
-  access-key: minioadmin
-  secret-key: minioadmin
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
   bucket-name: ohmybaby-media
 
-# Logging - more verbose for local dev
+# Logging
 logging:
   level:
     root: INFO
     com.ohmybaby: DEBUG
-    org.springframework.security: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: INFO
+    p6spy: INFO

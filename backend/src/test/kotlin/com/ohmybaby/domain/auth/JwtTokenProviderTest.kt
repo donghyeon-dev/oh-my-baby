@@ -33,7 +33,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When
         val token = jwtTokenProvider.createAccessToken(userId, email, role)
@@ -63,7 +63,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "ADMIN"
+        val role = "PARENT"
         val beforeCreation = System.currentTimeMillis()
 
         // When
@@ -91,7 +91,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When
         val token = jwtTokenProvider.createRefreshToken(userId, email, role)
@@ -118,7 +118,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When
         val accessToken = jwtTokenProvider.createAccessToken(userId, email, role)
@@ -149,7 +149,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
         val token = jwtTokenProvider.createAccessToken(userId, email, role)
 
         // When
@@ -170,7 +170,7 @@ class JwtTokenProviderTest {
 
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
         val token = shortExpirationProvider.createAccessToken(userId, email, role)
 
         // Wait for token to expire
@@ -207,7 +207,7 @@ class JwtTokenProviderTest {
 
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
         val token = differentProvider.createAccessToken(userId, email, role)
 
         // When - Validate with original provider (different secret)
@@ -236,7 +236,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
         val token = jwtTokenProvider.createAccessToken(userId, email, role)
 
         // When
@@ -264,7 +264,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "ADMIN"
+        val role = "PARENT"
         val token = jwtTokenProvider.createAccessToken(userId, email, role)
 
         // When
@@ -292,7 +292,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "ADMIN"
+        val role = "PARENT"
         val token = jwtTokenProvider.createAccessToken(userId, email, role)
 
         // When
@@ -331,7 +331,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "lifecycle@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When - Create access token
         val accessToken = jwtTokenProvider.createAccessToken(userId, email, role)
@@ -362,7 +362,7 @@ class JwtTokenProviderTest {
         val userId1 = UUID.randomUUID()
         val userId2 = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When
         val token1 = jwtTokenProvider.createAccessToken(userId1, email, role)
@@ -377,7 +377,7 @@ class JwtTokenProviderTest {
         // Given
         val userId = UUID.randomUUID()
         val email = "test@example.com"
-        val role = "VIEWER"
+        val role = "FAMILY"
 
         // When
         val token1 = jwtTokenProvider.createAccessToken(userId, email, role)

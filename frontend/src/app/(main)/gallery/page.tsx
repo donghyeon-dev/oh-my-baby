@@ -71,24 +71,38 @@ export default function GalleryPage() {
     setDownloadProgress({ current: 0, total: selectedIds.size })
 
     const ids = Array.from(selectedIds)
+    const blobUrls: string[] = []
+
     for (let i = 0; i < ids.length; i++) {
       setDownloadProgress({ current: i + 1, total: ids.length })
       try {
         const media = allMediaRef.current.find(m => m.id === ids[i])
         const url = await mediaService.getDownloadUrl(ids[i])
-        // Trigger download
+        const response = await fetch(url)
+        const blob = await response.blob()
+        const blobUrl = URL.createObjectURL(blob)
+        blobUrls.push(blobUrl)
+
         const link = document.createElement('a')
-        link.href = url
+        link.href = blobUrl
         link.download = media?.originalName || 'download'
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-        // Small delay between downloads
-        await new Promise(resolve => setTimeout(resolve, 500))
+
+        // Wait longer between downloads so the browser doesn't block them
+        if (i < ids.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 2000))
+        }
       } catch (err) {
         console.error('Download failed:', ids[i], err)
       }
     }
+
+    // Revoke all blob URLs after all downloads have started
+    setTimeout(() => {
+      blobUrls.forEach(url => URL.revokeObjectURL(url))
+    }, 10000)
 
     setDownloading(false)
     setSelectedIds(new Set())

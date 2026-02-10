@@ -3,8 +3,9 @@ export interface User {
   id: number
   email: string
   name: string
-  role: 'ADMIN' | 'VIEWER'
+  role: 'PARENT' | 'FAMILY'
   createdAt: string
+  lastLoginAt?: string
 }
 
 // Auth types
@@ -42,6 +43,7 @@ export interface Media {
   uploaderName: string
   likeCount?: number
   isLiked?: boolean
+  commentCount?: number
 }
 
 export interface MediaUploadResponse {
@@ -106,6 +108,15 @@ export interface ApiResponse<T> {
     message: string
   }
   timestamp: string
+}
+
+// Comment types
+export interface Comment {
+  id: string
+  userId: string
+  userName: string
+  content: string
+  createdAt: string
 }
 
 // Notification types

@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { cn, formatDate, formatFileSize, formatDuration } from '@/lib/utils'
 import { Media } from '@/types'
 import { DownloadButton } from './DownloadButton'
+import { LikeButton } from './LikeButton'
+import { likeService, LikeInfo } from '@/services/like'
 
 interface MediaViewerProps {
   media: Media[]
@@ -16,6 +18,7 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
   const [showMetadata, setShowMetadata] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isFitMode, setIsFitMode] = useState(true)
+  const [likes, setLikes] = useState<LikeInfo[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
@@ -61,6 +64,23 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
   useEffect(() => {
     setIsAnimating(true)
   }, [])
+
+  // Fetch likes for current media
+  useEffect(() => {
+    if (!currentMedia) return
+
+    const fetchLikes = async () => {
+      try {
+        const likesList = await likeService.getLikes(currentMedia.id)
+        setLikes(likesList)
+      } catch (error) {
+        console.error('Failed to fetch likes:', error)
+        setLikes([])
+      }
+    }
+
+    fetchLikes()
+  }, [currentMedia?.id])
 
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
@@ -215,6 +235,15 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </button>
+
+        {/* Like button */}
+        <LikeButton
+          mediaId={currentMedia.id}
+          initialIsLiked={currentMedia.isLiked}
+          initialLikeCount={currentMedia.likeCount}
+          variant="icon"
+          className="!bg-black/50 hover:!bg-black/70"
+        />
 
         {/* Download button */}
         <DownloadButton
@@ -379,6 +408,30 @@ export function MediaViewer({ media, initialIndex, onClose }: MediaViewerProps) 
             <div>
               <label className="text-gray-400 text-sm">업로더</label>
               <p className="text-white">{currentMedia.uploaderName}</p>
+            </div>
+
+            {/* Likes */}
+            <div>
+              <label className="text-gray-400 text-sm">좋아요 {likes.length > 0 && `(${likes.length})`}</label>
+              {likes.length > 0 ? (
+                <div className="mt-1 space-y-1.5">
+                  {likes.map((like) => (
+                    <div key={like.userId} className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs font-medium text-pink-600">
+                          {like.userName.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-white text-sm truncate">{like.userName}</p>
+                        <p className="text-gray-500 text-xs">{formatDate(like.createdAt)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm mt-1">아직 좋아요가 없습니다</p>
+              )}
             </div>
 
             {/* MIME type */}

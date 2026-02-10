@@ -92,7 +92,7 @@ class AuthServiceTest {
 
         verify(exactly = 1) { userRepository.existsByEmail(request.email) }
         verify(exactly = 1) { passwordEncoder.encode(request.password) }
-        verify(exactly = 1) { userRepository.save(any<User>()) }
+        verify(exactly = 2) { userRepository.save(any<User>()) }
         verify(exactly = 1) { jwtTokenProvider.createAccessToken(any(), any(), any()) }
         verify(exactly = 1) { jwtTokenProvider.createRefreshToken(any(), any(), any()) }
         verify(exactly = 1) { refreshTokenRepository.save(any<RefreshToken>()) }
@@ -147,6 +147,7 @@ class AuthServiceTest {
 
         every { userRepository.findByEmail(request.email) } returns Optional.of(user)
         every { passwordEncoder.matches(request.password, encodedPassword) } returns true
+        every { userRepository.save(any<User>()) } returns user
         every { jwtTokenProvider.createAccessToken(userId, request.email, UserRole.VIEWER.name) } returns accessToken
         every { jwtTokenProvider.createRefreshToken(userId, request.email, UserRole.VIEWER.name) } returns refreshToken
         every { jwtTokenProvider.getRefreshTokenExpiration() } returns 604800000L

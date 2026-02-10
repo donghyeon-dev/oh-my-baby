@@ -39,7 +39,8 @@ data class UserResponse(
     val email: String,
     val name: String,
     val role: String,
-    val createdAt: String
+    val createdAt: String,
+    val lastLoginAt: String?
 ) {
     companion object {
         fun from(user: com.ohmybaby.domain.user.User): UserResponse {
@@ -48,7 +49,8 @@ data class UserResponse(
                 email = user.email,
                 name = user.name,
                 role = user.role.name,
-                createdAt = user.createdAt.toString()
+                createdAt = user.createdAt.toString(),
+                lastLoginAt = user.lastLoginAt?.toString()
             )
         }
     }

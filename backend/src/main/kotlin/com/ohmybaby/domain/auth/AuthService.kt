@@ -39,6 +39,9 @@ class AuthService(
             role = if (isFirstUser) UserRole.ADMIN else UserRole.VIEWER
         )
         val savedUser = userRepository.save(user)
+        // Registration counts as first login
+        savedUser.updateLastLoginAt()
+        userRepository.save(savedUser)
 
         // Generate tokens
         return createTokenResponse(savedUser)
@@ -53,6 +56,10 @@ class AuthService(
         if (!passwordEncoder.matches(request.password, user.password)) {
             throw UnauthorizedException("이메일 또는 비밀번호가 올바르지 않습니다")
         }
+
+        // Update last login time
+        user.updateLastLoginAt()
+        userRepository.save(user)
 
         // Generate tokens
         return createTokenResponse(user)

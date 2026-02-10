@@ -37,6 +37,10 @@ class User(
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
 
+    @Column(name = "last_login_at")
+    var lastLoginAt: LocalDateTime? = null
+        protected set
+
     @PreUpdate
     fun onUpdate() {
         updatedAt = LocalDateTime.now()
@@ -52,6 +56,10 @@ class User(
 
     fun updateRole(newRole: UserRole) {
         this.role = newRole
+    }
+
+    fun updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now()
     }
 
     override fun toString(): String {

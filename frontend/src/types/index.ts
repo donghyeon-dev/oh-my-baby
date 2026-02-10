@@ -5,6 +5,7 @@ export interface User {
   name: string
   role: 'ADMIN' | 'VIEWER'
   createdAt: string
+  lastLoginAt?: string
 }
 
 // Auth types

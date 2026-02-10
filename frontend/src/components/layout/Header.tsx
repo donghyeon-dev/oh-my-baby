@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/authStore'
 import authService from '@/services/auth'
-import { LogOut, User, Upload, Image, Menu, X } from 'lucide-react'
+import { LogOut, User, Upload, Image, Menu, X, Users } from 'lucide-react'
 import { NotificationBell } from '@/components/notification/NotificationBell'
 
 export function Header() {
@@ -52,6 +52,15 @@ export function Header() {
                 업로드
               </Link>
             )}
+            {user?.role === 'ADMIN' && (
+              <Link
+                href="/family"
+                className="flex items-center text-gray-600 hover:text-pink-500 transition-colors"
+              >
+                <Users className="w-5 h-5 mr-1" />
+                가족
+              </Link>
+            )}
             <NotificationBell />
             <div className="flex items-center space-x-4 pl-4 border-l border-gray-200">
               <span className="text-sm text-gray-600">
@@ -95,6 +104,16 @@ export function Header() {
                 >
                   <Upload className="w-5 h-5 mr-3" />
                   업로드
+                </Link>
+              )}
+              {user?.role === 'ADMIN' && (
+                <Link
+                  href="/family"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center px-2 py-2 text-gray-600 hover:bg-pink-50 rounded-lg"
+                >
+                  <Users className="w-5 h-5 mr-3" />
+                  가족
                 </Link>
               )}
               <div className="px-2 py-2">
